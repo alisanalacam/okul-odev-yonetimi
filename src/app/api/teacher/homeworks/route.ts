@@ -9,6 +9,8 @@ export async function GET(request: NextRequest) {
   const teacherPayload = await verifyTeacher(request);
   if (teacherPayload instanceof NextResponse) return teacherPayload;
 
+  const loggedInTeacherId = teacherPayload.userId;
+
   const { searchParams } = new URL(request.url);
   const classId = searchParams.get('classId');
   const date = searchParams.get('date'); // YYYY-MM-DD formatında
@@ -16,7 +18,7 @@ export async function GET(request: NextRequest) {
   if (!classId || !date) return NextResponse.json({ message: "Sınıf ve Tarih gerekli." }, { status: 400 });
 
   const homeworks = await prisma.homework.findMany({
-    where: { classId: parseInt(classId), dueDate: new Date(date) },
+    where: { classId: parseInt(classId), dueDate: new Date(date), teacherUserId: loggedInTeacherId },
     include: { book: true }
   });
   return NextResponse.json(homeworks);
@@ -96,6 +98,7 @@ export async function POST(request: NextRequest) {
                 };
             });
             const fileData = await Promise.all(fileUploadPromises);
+            //@ts-ignore
             await prisma.homeworkAttachment.createMany({ data: fileData });
         }
     }

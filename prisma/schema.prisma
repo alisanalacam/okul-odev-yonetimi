@@ -1,0 +1,268 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// MODELLER
+
+model User {
+  id                Int      @id @default(autoincrement())
+  name              String
+  email             String   @unique
+  phone             String   @unique
+  role              Role
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  // İlişkiler
+  teacherDetails    TeacherDetails?
+  teacherClasses    TeacherClass[]
+  studentsAsParent  Student[]
+  comments          Comment[]
+  sentMessages      Message[]       @relation("Sender")
+  receivedMessages  Message[]       @relation("Receiver")
+  notifications     Notification[]
+  homeworks         Homework[] // <-- DEĞİŞİKLİK: İlişki buraya eklendi.
+  announcements     Announcement[] // <-- DEĞİŞİKLİK: İlişki buraya eklendi.
+  
+  @@map("users")
+}
+
+model TeacherDetails {
+  userId  Int     @id @map("user_id")
+  branch  String?
+  
+  // İlişkiler
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // DEĞİŞİKLİK: Hatalı ilişkiler (homeworks, announcements) buradan kaldırıldı.
+  
+  @@map("teacher_details")
+}
+
+model Class {
+  id      Int    @id @default(autoincrement())
+  grade   Int    // 1-8
+  section String @db.VarChar(1) // A-D
+
+  // İlişkiler
+  teacherClasses      TeacherClass[]
+  students            Student[]
+  books               Book[]
+  homeworks           Homework[]
+  announcementClasses AnnouncementClass[]
+  
+  @@map("classes")
+}
+
+model TeacherClass {
+  teacherUserId Int @map("teacher_user_id")
+  classId       Int @map("class_id")
+
+  // İlişkiler
+  teacher User  @relation(fields: [teacherUserId], references: [id], onDelete: Cascade)
+  class   Class @relation(fields: [classId], references: [id], onDelete: Cascade)
+
+  @@id([teacherUserId, classId])
+  @@map("teacher_classes")
+}
+
+model Student {
+  id           Int      @id @default(autoincrement())
+  name         String
+  classId      Int      @map("class_id")
+  parentUserId Int      @map("parent_user_id")
+
+  // İlişkiler
+  class              Class                @relation(fields: [classId], references: [id])
+  parent             User                 @relation(fields: [parentUserId], references: [id], onDelete: Cascade)
+  homeworkSubmissions HomeworkSubmission[]
+  
+  @@map("students")
+}
+
+model Book {
+  id            Int      @id @default(autoincrement())
+  name          String
+  coverImageUrl String?  @map("cover_image_url")
+  pageCount     Int?     @map("page_count")
+  classId       Int      @map("class_id")
+
+  // İlişkiler
+  class     Class      @relation(fields: [classId], references: [id])
+  homeworks Homework[]
+  
+  @@map("books")
+}
+
+model Homework {
+  id            Int      @id @default(autoincrement())
+  teacherUserId Int      @map("teacher_user_id")
+  classId       Int      @map("class_id")
+  bookId        Int?
+  notes         String?  @db.Text
+  dueDate       DateTime @db.Date @map("due_date")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  // İlişkiler
+  teacher      User                 @relation(fields: [teacherUserId], references: [id]) // <-- DEĞİŞİKLİK: Buradaki ilişki artık User modelindeki 'homeworks' alanına bağlanıyor.
+  class        Class                @relation(fields: [classId], references: [id])
+  book         Book?                @relation(fields: [bookId], references: [id])
+  submissions  HomeworkSubmission[]
+  attachments HomeworkAttachment[]
+  
+  @@map("homeworks")
+}
+
+model HomeworkSubmission {
+  id           Int      @id @default(autoincrement())
+  homeworkId   Int      @map("homework_id")
+  studentId    Int      @map("student_id")
+  status       SubmissionStatus @default(pending)
+  parentNotes  String?  @db.Text @map("parent_notes")
+  submittedAt  DateTime? @map("submitted_at")
+
+  // İlişkiler
+  homework  Homework          @relation(fields: [homeworkId], references: [id], onDelete: Cascade)
+  student   Student           @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  photos    SubmissionPhoto[]
+  comments  Comment[]
+  
+  @@unique([studentId, homeworkId])
+  @@map("homework_submissions")
+}
+
+model SubmissionPhoto {
+  id           Int      @id @default(autoincrement())
+  submissionId Int      @map("submission_id")
+  photoUrl     String   @map("photo_url")
+  
+  // İlişkiler
+  submission HomeworkSubmission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+
+  @@map("submission_photos")
+}
+
+model Comment {
+  id           Int      @id @default(autoincrement())
+  submissionId Int      @map("submission_id")
+  userId       Int      @map("user_id") 
+  commentText  String   @db.Text @map("comment_text")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  // İlişkiler
+  submission HomeworkSubmission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  user       User               @relation(fields: [userId], references: [id])
+  
+  @@map("comments")
+}
+
+model Announcement {
+  id            Int      @id @default(autoincrement())
+  teacherUserId Int      @map("teacher_user_id")
+  title         String
+  content       String?  @db.Text
+  type          AnnouncementType
+  linkUrl       String?  @map("link_url")
+  //photoUrl      String?  @map("photo_url")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  // İlişkiler
+  teacher             User                @relation(fields: [teacherUserId], references: [id]) // <-- DEĞİŞİKLİK: Buradaki ilişki artık User modelindeki 'announcements' alanına bağlanıyor.
+  announcementClasses AnnouncementClass[]
+  photos              AnnouncementPhoto[]
+  
+  @@map("announcements")
+}
+
+model AnnouncementClass {
+  announcementId Int @map("announcement_id")
+  classId        Int @map("class_id")
+
+  // İlişkiler
+  announcement Announcement @relation(fields: [announcementId], references: [id], onDelete: Cascade)
+  class        Class        @relation(fields: [classId], references: [id], onDelete: Cascade)
+
+  @@id([announcementId, classId])
+  @@map("announcement_classes")
+}
+
+model Message {
+  id         Int      @id @default(autoincrement())
+  senderId   Int      @map("sender_id")
+  receiverId Int      @map("receiver_id")
+  content    String   @db.Text
+  isRead     Boolean  @default(false) @map("is_read")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  // İlişkiler
+  sender   User @relation("Sender", fields: [senderId], references: [id])
+  receiver User @relation("Receiver", fields: [receiverId], references: [id])
+  
+  @@map("messages")
+}
+
+model Notification {
+  id          Int      @id @default(autoincrement())
+  userId      Int      @map("user_id") 
+  type        NotificationType
+  referenceId Int      @map("reference_id") 
+  isRead      Boolean  @default(false) @map("is_read")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  // İlişkiler
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+
+model HomeworkAttachment {
+  id         Int      @id @default(autoincrement())
+  homeworkId Int      @map("homework_id")
+  fileUrl    String   @map("file_url")
+  fileName   String   @map("file_name") //  Dosyanın orijinal adını saklamak için
+  fileType   String   @map("file_type") //  'image/jpeg', 'application/pdf' gibi
+  homework   Homework @relation(fields: [homeworkId], references: [id], onDelete: Cascade)
+  @@map("homework_attachments")
+}
+
+model AnnouncementPhoto {
+  id             Int          @id @default(autoincrement())
+  announcementId Int          @map("announcement_id")
+  photoUrl       String       @map("photo_url")
+  announcement   Announcement @relation(fields: [announcementId], references: [id], onDelete: Cascade)
+  @@map("announcement_photos")
+}
+
+
+// ENUM'lar
+
+enum Role {
+  admin
+  teacher
+  parent
+}
+
+enum SubmissionStatus {
+  pending
+  completed
+  not_completed
+}
+
+enum AnnouncementType {
+  note
+  link
+  photo
+}
+
+enum NotificationType {
+  announcement
+  comment
+  message
+}

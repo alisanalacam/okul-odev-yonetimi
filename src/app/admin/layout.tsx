@@ -35,8 +35,8 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
         {children}
       </main>
       
-      <nav className="bg-white shadow-t border-t">
-         <div className="flex justify-around items-center p-2">
+      <nav className="bg-white">
+        <div className="flex justify-around items-center p-2 border-t-2 border-gray-200 border-t-gray-200">
             <Link href="/admin" className="flex flex-col items-center text-gray-600 hover:text-blue-500">
                 <ChartBarIcon className="h-6 w-6" />
                 <span className="text-xs">Panel</span>

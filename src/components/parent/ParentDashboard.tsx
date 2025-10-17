@@ -57,6 +57,7 @@ export default function ParentDashboard() {
                 value={selectedDate}
                 onChange={e => setSelectedDate(e.target.value)}
                 className="w-full border-white-300 bg-white rounded-lg shadow-sm p-3 pl-10 text-base focus:ring-indigo-500 focus:border-indigo-500"
+
             />
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <CalendarDaysIcon className="h-5 w-5 text-gray-400"/>

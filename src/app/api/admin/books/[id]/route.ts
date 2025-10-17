@@ -8,18 +8,18 @@ import fs from 'fs';
 export const config = { api: { bodyParser: false } };
 
 // TEK BİR KİTABI GETİRME
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const adminCheck = await verifyAdmin(request);
   if (adminCheck instanceof NextResponse) return adminCheck;
   try {
-    const book = await prisma.book.findUnique({ where: { id: parseInt(params.id) } });
+    const book = await prisma.book.findUnique({ where: { id: parseInt((await params).id) } });
     if (!book) return NextResponse.json({ message: 'Kitap bulunamadı.' }, { status: 404 });
     return NextResponse.json(book);
   } catch (error) { return NextResponse.json({ message: "Sunucu hatası" }, { status: 500 }); }
 }
 
 // KİTAP GÜNCELLEME (Dosya yükleme dahil)
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const adminCheck = await verifyAdmin(request);
   if (adminCheck instanceof NextResponse) return adminCheck;
   
@@ -41,7 +41,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     }
     
     const updatedBook = await prisma.book.update({
-        where: { id: parseInt(params.id) },
+        where: { id: parseInt((await params).id) },
         data: {
             name: name,
             classId: parseInt(classId),
@@ -57,13 +57,13 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 }
 
 // KİTAP SİLME
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const adminCheck = await verifyAdmin(request);
   if (adminCheck instanceof NextResponse) return adminCheck;
   try {
     // Not: Bu işlem sadece veritabanından siler, R2'deki resmi silmez.
     // İstenirse R2'den silme kodu da eklenebilir.
-    await prisma.book.delete({ where: { id: parseInt(params.id) } });
+    await prisma.book.delete({ where: { id: parseInt((await params).id) } });
     return new NextResponse(null, { status: 204 });
   } catch (error) { return NextResponse.json({ message: "Silme işlemi başarısız" }, { status: 500 }); }
 }

@@ -2,12 +2,12 @@ import { NextResponse, NextRequest } from 'next/server';
 import { prisma } from '@/lib/db';
 import { verifyTeacher } from '@/lib/auth-utils';
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const teacherPayload = await verifyTeacher(request);
   if (teacherPayload instanceof NextResponse) return teacherPayload;
 
   try {
-    const submissionId = parseInt(params.id);
+    const submissionId = parseInt((await params).id);
     const submission = await prisma.homeworkSubmission.findUnique({
       where: { id: submissionId },
       include: {

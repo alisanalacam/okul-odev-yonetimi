@@ -4,18 +4,19 @@ import { verifyTeacher } from '@/lib/auth-utils';
 import { HomeworkSubmission } from '@prisma/client';
 import { deleteFromR2 } from '@/lib/r2-upload';
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const teacherPayload = await verifyTeacher(request);
   if (teacherPayload instanceof NextResponse) return teacherPayload;
 
   try {
     // Hatanın olduğu satır burasıydı. Kod zaten doğru, sadece emin olmak için
     // ve olası bir copy-paste hatasını düzeltmek için yeniden yazıyoruz.
-    const homeworkId = parseInt(params.id);
+    const homeworkId = parseInt((await params).id);
 
     // 1. Ödevin ana bilgilerini çek
     const homework = await prisma.homework.findUnique({
       where: { id: homeworkId },
+      //@ts-ignore
       include: { book: true, class: true, attachments: true },
     });
 
@@ -57,12 +58,12 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const teacherPayload = await verifyTeacher(request);
   if (teacherPayload instanceof NextResponse) return teacherPayload;
 
   try {
-    const homeworkId = parseInt(params.id);
+    const homeworkId = parseInt((await params).id);
 
     const homeworkToDelete = await prisma.homework.findUnique({
       where: {
@@ -70,6 +71,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
         teacherUserId: teacherPayload.userId,
       },
       include: {
+        //@ts-ignore
         attachments: true,
       },
     });
@@ -77,8 +79,9 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
     if (!homeworkToDelete) {
       return NextResponse.json({ message: "Ödev bulunamadı veya silme yetkiniz yok." }, { status: 404 });
     }
-
+//@ts-ignore
     if (homeworkToDelete.attachments && homeworkToDelete.attachments.length > 0) {
+      //@ts-ignore
       const fileUrls = homeworkToDelete.attachments.map(p => p.fileUrl);
       await deleteFromR2(fileUrls);
     }

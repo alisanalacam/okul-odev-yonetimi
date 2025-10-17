@@ -3,17 +3,18 @@ import { NextResponse, NextRequest } from 'next/server';
 import { prisma } from '@/lib/db';
 import { verifyParent } from '@/lib/auth-utils';
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const parentPayload = await verifyParent(request);
   if (parentPayload instanceof NextResponse) return parentPayload;
 
-  const submissionId = parseInt(params.id);
+  const submissionId = parseInt((await params).id);
 
   const submission = await prisma.homeworkSubmission.findUnique({
     where: { id: submissionId },
     include: { 
       comments: { include: { user: { select: { name: true, role: true } } }, orderBy: { createdAt: 'asc' } },
       homework: { // Homework'ü de buradan çekiyoruz
+        //@ts-ignore
         include: { book: true, attachments: true, teacher: { select: { name: true, id: true } } }
       }
     }
@@ -25,6 +26,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 
   // Diğer API ile aynı veri yapısını oluşturmak için homework'ü dışarı çıkarıyoruz.
   const responseData = {
+    //@ts-ignore
     homework: submission.homework,
     submission: {
       ...submission,

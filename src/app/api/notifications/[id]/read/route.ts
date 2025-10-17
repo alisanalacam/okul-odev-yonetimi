@@ -2,7 +2,7 @@ import { NextResponse, NextRequest } from 'next/server';
 import { prisma } from '@/lib/db';
 import jwt from 'jsonwebtoken';
 
-export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     // Kullanıcıyı token'dan alıp yetkilendirme yapalım
     const authHeader = request.headers.get('authorization');
     if (!authHeader?.startsWith('Bearer ')) {
@@ -12,7 +12,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     const payload = jwt.verify(token, process.env.JWT_SECRET!) as { userId: number };
     
     try {
-        const notificationId = parseInt(params.id);
+        const notificationId = parseInt((await params).id);
 
         // Sadece kullanıcının kendi bildirimini güncelleyebilmesini sağla
         await prisma.notification.update({

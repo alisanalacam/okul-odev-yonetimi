@@ -3,12 +3,12 @@ import { prisma } from '@/lib/db';
 import { verifyAdmin } from '@/lib/auth-utils';
 
 // TEK BİR ÖĞRENCİYİ GETİRME
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const adminCheck = await verifyAdmin(request);
   if (adminCheck instanceof NextResponse) return adminCheck;
 
   try {
-    const studentId = parseInt(params.id);
+    const studentId = parseInt((await params).id);
     const student = await prisma.student.findUnique({
       where: { id: studentId },
       include: {
@@ -27,11 +27,11 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 }
 
 // ÖĞRENCİ GÜNCELLEME
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const adminCheck = await verifyAdmin(request);
   if (adminCheck instanceof NextResponse) return adminCheck;
 
-  const studentId = parseInt(params.id);
+  const studentId = parseInt((await params).id);
   const body = await request.json();
   const { studentName, classId, parentName, parentEmail, parentPhone } = body;
 
@@ -63,12 +63,12 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 }
 
 // ÖĞRENCİ SİLME
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const adminCheck = await verifyAdmin(request);
   if (adminCheck instanceof NextResponse) return adminCheck;
 
   try {
-    const studentId = parseInt(params.id);
+    const studentId = parseInt((await params).id);
     await prisma.student.delete({ where: { id: studentId } });
     return new NextResponse(null, { status: 204 }); // No Content
   } catch (error) {

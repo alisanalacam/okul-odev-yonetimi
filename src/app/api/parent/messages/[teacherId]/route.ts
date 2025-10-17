@@ -2,11 +2,11 @@ import { NextResponse, NextRequest } from 'next/server';
 import { prisma } from '@/lib/db';
 import { verifyParent } from '@/lib/auth-utils';
 
-export async function GET(request: NextRequest, { params }: { params: { teacherId: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ teacherId: string }> }) {
     const parentPayload = await verifyParent(request);
     if (parentPayload instanceof NextResponse) return parentPayload;
     
-    const teacherId = parseInt(params.teacherId);
+    const teacherId = parseInt((await params).teacherId);
     const parentId = parentPayload.userId;
 
     const messages = await prisma.message.findMany({
@@ -23,11 +23,11 @@ export async function GET(request: NextRequest, { params }: { params: { teacherI
 }
 
 // Yeni mesaj gönder
-export async function POST(request: NextRequest, { params }: { params: { teacherId: string } }) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ teacherId: string }> }) {
     const parentPayload = await verifyParent(request);
     if (parentPayload instanceof NextResponse) return parentPayload;
     
-    const teacherId = parseInt(params.teacherId);
+    const teacherId = parseInt((await params).teacherId);
     const { content } = await request.json();
 
     const message = await prisma.message.create({

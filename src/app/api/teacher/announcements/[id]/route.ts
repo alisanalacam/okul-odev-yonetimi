@@ -4,12 +4,12 @@ import { verifyTeacher } from '@/lib/auth-utils';
 import { deleteFromR2 } from '@/lib/r2-upload'; // Import the new function
 
 // TEK BİR DUYURUYU GETİRME
-export async function GET(request: NextRequest, { params }: { params: { id:string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const teacherPayload = await verifyTeacher(request);
   if (teacherPayload instanceof NextResponse) return teacherPayload;
   
   try {
-    const announcementId = parseInt(params.id);
+    const announcementId = parseInt((await params).id);
     const announcement = await prisma.announcement.findUnique({
       where: { id: announcementId },
       include: {
@@ -34,12 +34,12 @@ export async function GET(request: NextRequest, { params }: { params: { id:strin
 }
 
 // DUYURU SİLME
-export async function DELETE(request: NextRequest, { params }: { params: { id:string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const teacherPayload = await verifyTeacher(request);
   if (teacherPayload instanceof NextResponse) return teacherPayload;
   
   try {
-    const announcementId = parseInt(params.id);
+    const announcementId = parseInt((await params).id);
 
     const announcementToDelete = await prisma.announcement.findUnique({
       where: {

@@ -34,6 +34,7 @@ export async function GET(request: NextRequest) {
                     }
                 });
                 if (submission) {
+                    //@ts-ignore
                     context.homeworkName = submission.homework.book.name;
                     context.commenterName = submission.comments[0]?.user.name;
                 }

@@ -3,12 +3,12 @@ import { prisma } from '@/lib/db';
 import { verifyAdmin } from '@/lib/auth-utils';
 
 // Tek bir öğretmeni getirme
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     const adminCheck = await verifyAdmin(request);
     if (adminCheck instanceof NextResponse) return adminCheck;
   
     try {
-      const teacherId = parseInt(params.id);
+      const teacherId = parseInt((await params).id);
       const teacher = await prisma.user.findUnique({
         where: { id: teacherId, role: 'teacher' },
         include: {
@@ -33,11 +33,11 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   }
 
 // Öğretmen Güncelleme
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const adminCheck = await verifyAdmin(request);
   if (adminCheck instanceof NextResponse) return adminCheck;
 
-  const teacherId = parseInt(params.id);
+  const teacherId = parseInt((await params).id);
   const body = await request.json();
   const { name, email, phone, branch, classIds } = body;
 
@@ -73,12 +73,12 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 }
 
 // Öğretmen Silme
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const adminCheck = await verifyAdmin(request);
   if (adminCheck instanceof NextResponse) return adminCheck;
   
   try {
-    const teacherId = parseInt(params.id);
+    const teacherId = parseInt((await params).id);
     // Cascade delete sayesinde, ilişkili TeacherDetails ve TeacherClass kayıtları da silinir.
     await prisma.user.delete({ where: { id: teacherId } });
     return new NextResponse(null, { status: 204 }); // No Content

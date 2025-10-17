@@ -208,8 +208,6 @@ export default function SubmissionDetailView({ initialData, refreshData }: Submi
               <CommentsSection 
                 submissionId={submission.id}
                 comments={submission.comments}
-                currentUser={user}
-                token={token}
                 recipientId={homework.teacher.id}
                 // DEĞİŞİKLİK: refreshData fonksiyonunu doğrudan geçir
                 getLatestData={refreshData}

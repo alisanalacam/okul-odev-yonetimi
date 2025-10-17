@@ -16,13 +16,15 @@ export default function AddStudentPage() {
         if (token) api.get('/api/classes', token).then(setAvailableClasses);
     }, [token]);
 
+    
     const handleSubmit = async (data: any) => {
         setIsSubmitting(true);
         // API'ımız {grade, section} bekliyor, onu oluşturalım
         const selectedClass = availableClasses.find((c: any) => c.id == data.classId);
         const submissionData = {
           studentName: data.studentName,
-          studentClass: { grade: selectedClass?.grade, section: selectedClass?.section },
+          //@ts-ignore
+          studentClass: { grade: selectedClass?.grade as number, section: selectedClass?.section as string },
           parentName: data.parentName,
           parentEmail: data.parentEmail,
           parentPhone: data.parentPhone,

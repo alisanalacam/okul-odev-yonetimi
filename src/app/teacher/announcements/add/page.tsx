@@ -120,7 +120,7 @@ export default function AddAnnouncementPage() {
                     <>
                         <div>
                            <label htmlFor="content" className="block text-sm font-medium text-gray-700">Açıklama</label>
-                           <textarea id="content" value={content} onChange={e => setContent(e.target.value)} rows={3} className="input w-full mt-1mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"/>
+                           <textarea id="content" value={content} onChange={e => setContent(e.target.value)} rows={3} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"/>
                         </div>
                         <div>
                            <label htmlFor="linkUrl" className="block text-sm font-medium text-gray-700">Link URL*</label>

@@ -152,7 +152,7 @@ export default function AddHomeworkPage() {
 
             <div className="bg-white p-4 rounded-lg shadow">
                 <label htmlFor="date" className="block text-sm font-medium text-gray-700">Ödev Tarihi</label>
-                <input type="date" id="date" value={date} onChange={e => setDate(e.target.value)} className="input w-full mt-1"/>
+                <input type="date" id="date" value={date} onChange={e => setDate(e.target.value)} className="w-full p-2 border rounded"/>
             </div>
             
             {homeworkItems.map((item) => (
@@ -162,14 +162,14 @@ export default function AddHomeworkPage() {
                     )}
                     <div>
                         <label htmlFor={`bookId-${item.id}`} className="block text-sm font-medium text-gray-700">Kitap</label>
-                        <select id={`bookId-${item.id}`} value={item.bookId} onChange={e => handleItemChange(item.id, 'bookId', e.target.value)} className="input w-full mt-1">
+                        <select id={`bookId-${item.id}`} value={item.bookId} onChange={e => handleItemChange(item.id, 'bookId', e.target.value)} className="w-full p-2 border rounded">
                             <option value="" disabled>Kitap Seçin...</option>
                             {books.map(book => <option key={book.id} value={book.id}>{book.name}</option>)}
                         </select>
                     </div>
                      <div>
                         <label htmlFor={`notes-${item.id}`} className="block text-sm font-medium text-gray-700">Açıklama / Sayfa Aralığı</label>
-                        <textarea id={`notes-${item.id}`} value={item.notes} onChange={e => handleItemChange(item.id, 'notes', e.target.value)} placeholder="Örn: 15-20. sayfalar arası" rows={2} className="input w-full mt-1"/>
+                        <textarea id={`notes-${item.id}`} value={item.notes} onChange={e => handleItemChange(item.id, 'notes', e.target.value)} placeholder="Örn: 15-20. sayfalar arası" rows={2} className="w-full p-2 border rounded"/>
                     </div>
                     <div>
                         <label className="text-sm font-medium text-gray-700">Dosya Ekle <span className="text-gray-400">(Resim, PDF vb.)</span></label>

@@ -2,7 +2,7 @@ import { NextResponse, NextRequest } from 'next/server';
 import { prisma } from '@/lib/db';
 import jwt from 'jsonwebtoken';
 
-const NOTIFICATIONS_PER_PAGE = 2;
+const NOTIFICATIONS_PER_PAGE = 20;
 
 // Hem veli hem öğretmen kullanacağı için ortak bir endpoint yapıyoruz
 export async function GET(request: NextRequest) {

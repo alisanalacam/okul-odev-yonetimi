@@ -84,8 +84,8 @@ const TeacherNav = () => {
   ];
 
   return (
-      <nav className="bg-white shadow-t border-t sticky bottom-0 z-10">
-          <div className="flex justify-around items-center p-2">
+      <nav className="bg-white sticky bottom-0 z-10">
+          <div className="flex justify-around items-center p-2 border-t-2 border-gray-200 border-t-gray-200">
               {navItems.map(({ href, label, Icon }) => {
                   const isActive = pathname === href || (href !== '/teacher' && pathname.startsWith(href));
                   return (

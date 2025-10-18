@@ -69,6 +69,10 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
 
   try {
     const studentId = parseInt((await params).id);
+    const studentData = await prisma.student.findFirst({ where: { id: studentId } });
+    if (studentData) {
+      await prisma.user.delete({ where: { id: studentData.parentUserId } });
+    }
     await prisma.student.delete({ where: { id: studentId } });
     return new NextResponse(null, { status: 204 }); // No Content
   } catch (error) {

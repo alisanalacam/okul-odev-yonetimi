@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { AcademicCapIcon } from '@heroicons/react/24/outline'; // Tailwind Heroicons kullanıyorsan
+import Link from 'next/link';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -102,6 +103,15 @@ export default function LoginPage() {
               {loading ? 'Giriş Yapılıyor...' : 'Giriş Yap'}
             </button>
           </form>
+          {/* YENİ EKLENEN BÖLÜM */}
+          <div className="mt-6 text-center">
+            <p className="text-sm text-gray-600">
+              Hesabınız yok mu?{' '}
+              <Link href="/register" className="font-medium text-indigo-600 hover:text-indigo-500">
+                Veli olarak kayıt olun
+              </Link>
+            </p>
+          </div>
 
           
         </div>

@@ -6,7 +6,7 @@ import { AuthProvider } from "@/context/AuthContext"; // Import et
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Okul Yönetim Sistemi",
+  title: "Ödev Yönetimi",
   description: "Öğretmen ve Veli Uygulaması",
 };
 
@@ -17,6 +17,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="tr">
+      <head>
+      <link rel="icon" href="/favicon.svg" type="image/png" sizes="32x32" />
+      <link rel="apple-touch-icon" href="/apple-icon.png" type="image/png" sizes="32x32"
+/>
+      </head>
       <body className={inter.className}>
         <AuthProvider> {/* Uygulamayı sarmala */}
           <div className="max-w-lg mx-auto bg-gray-50 min-h-screen font-sans">

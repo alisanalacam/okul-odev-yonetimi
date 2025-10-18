@@ -11,12 +11,13 @@ export async function compressImage(file: File): Promise<File> {
   console.log(`Original file size: ${(file.size / 1024 / 1024).toFixed(2)} MB`);
   
   try {
-    const compressedFile = await imageCompression(file, options);
-    console.log(`Compressed file size: ${(compressedFile.size / 1024 / 1024).toFixed(2)} MB`);
-    return compressedFile;
+    // Kütüphane zaten bir Blob döndürüyor, doğrudan onu kullanalım.
+    const compressedBlob = await imageCompression(file, options);
+    console.log(`Compression successful, new size: ${(compressedBlob.size / 1024 / 1024).toFixed(2)} MB`);
+    return compressedBlob;
   } catch (error) {
-    console.error("Image compression failed:", error);
-    // Küçültme başarısız olursa, orijinal dosyayı geri döndür.
+    console.error(`Compression failed for ${file.name}:`, error);
+    // Hata olursa, yine de orijinal dosyayı (ki o da bir Blob türüdür) geri döndür.
     return file;
   }
 }

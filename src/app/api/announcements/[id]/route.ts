@@ -8,7 +8,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     const announcement = await prisma.announcement.findUnique(
         { 
             where: { id: parseInt((await params).id) } ,
-            include: { photos: true }
+            //@ts-ignore
+            include: { attachments: true }
         },
     );
     if (!announcement) return NextResponse.json({ message: "Duyuru bulunamadı" }, { status: 404 });

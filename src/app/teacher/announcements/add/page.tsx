@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import api from '@/lib/api';
-import { ArrowLeftIcon } from '@heroicons/react/24/solid';
+import { ArrowLeftIcon, DocumentIcon, XMarkIcon } from '@heroicons/react/24/solid';
 import { compressImage } from '@/lib/image-compressor';
 
 export default function AddAnnouncementPage() {
@@ -14,8 +14,8 @@ export default function AddAnnouncementPage() {
     const [content, setContent] = useState('');
     const [linkUrl, setLinkUrl] = useState('');
     const [profile, setProfile] = useState<any>(null);
-    const [photos, setPhotos] = useState<File[]>([]);
-    const [previews, setPreviews] = useState<string[]>([]);
+    const [files, setFiles] = useState<File[]>([]); // photos -> files
+    const [previews, setPreviews] = useState<{ url: string; type: string; name: string }[]>([]);
     const [availableClasses, setAvailableClasses] = useState<any[]>([]);
     const [selectedClasses, setSelectedClasses] = useState<number[]>([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -31,6 +31,10 @@ export default function AddAnnouncementPage() {
             });
         }
     }, [token]);
+
+    useEffect(() => {
+        return () => previews.forEach(p => URL.revokeObjectURL(p.url));
+    }, [previews]);
     
     const handleClassToggle = (classId: number) => {
         setSelectedClasses(prev => 
@@ -38,32 +42,67 @@ export default function AddAnnouncementPage() {
         );
     };
 
+    const handleRemoveFile = (indexToRemove: number) => {
+        const previewToRemove = previews[indexToRemove];
+        if (previewToRemove) {
+            URL.revokeObjectURL(previewToRemove.url);
+        }
+        setFiles(files.filter((_, index) => index !== indexToRemove));
+        setPreviews(previews.filter((_, index) => index !== indexToRemove));
+    };
+
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files) {
-            const filesArray = Array.from(e.target.files);
-            
-            // Seçilen her dosyayı küçültmek için bir promise dizisi oluştur
-            const compressionPromises = filesArray.map(file => compressImage(file));
-            
-            try {
-                // Tüm küçültme işlemlerinin bitmesini bekle
-                const compressedFiles = await Promise.all(compressionPromises);
+        if (!e.target.files) return;
     
-                setPhotos(p => [...p, ...compressedFiles]);
-                const previewsArray = compressedFiles.map(file => URL.createObjectURL(file));
-                setPreviews(p => [...p, ...previewsArray]);
+        const filesArray = Array.from(e.target.files);
+        e.target.value = ''; // Input'u hemen sıfırla
     
-            } catch (error) {
-                console.error("Error compressing multiple files:", error);
-                alert("Resimler işlenirken bir hata oluştu.");
+        try {
+            const newFiles: File[] = [];
+            const newPreviews: { url: string; type: string; name: string }[] = [];
+    
+            for (const originalFile of filesArray) {
+                // 1. Dosyayı işle (resimse küçült, değilse orijinalini al)
+                const processedBlob = originalFile.type.startsWith('image/')
+                    ? await compressImage(originalFile)
+                    : originalFile;
+                
+                // 2. İşlenmiş Blob'dan ve orijinal dosya adından yeni bir File objesi oluştur.
+                // Bu, dosya adının ve türünün korunmasını garanti eder.
+                const finalFile = new File([processedBlob], originalFile.name, {
+                    type: processedBlob.type,
+                    lastModified: Date.now(),
+                });
+    
+                // 3. Önizleme URL'sini bu son, geçerli File objesinden oluştur.
+                // Bu adımın çalışması garanti altındadır.
+                const previewUrl = URL.createObjectURL(finalFile);
+                
+                newFiles.push(finalFile);
+                newPreviews.push({
+                    url: previewUrl,
+                    type: finalFile.type,
+                    name: finalFile.name,
+                });
             }
             
-            e.target.value = '';
+            // 4. State'i tek seferde, yeni dosyalarla güncelle.
+            setFiles(p => [...p, ...newFiles]);
+            setPreviews(p => [...p, ...newPreviews]);
+    
+        } catch (error) {
+            console.error("Dosyalar işlenirken bir hata oluştu:", error);
+            alert("Dosyalar işlenirken bir hata oluştu.");
         }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (type === 'photo' && files.length === 0) {
+            alert("Lütfen en az bir dosya seçin.");
+            setIsSubmitting(false);
+            return;
+        }
         setIsSubmitting(true);
         const formData = new FormData();
         formData.append('title', title);
@@ -71,7 +110,7 @@ export default function AddAnnouncementPage() {
         formData.append('content', content);
         formData.append('linkUrl', linkUrl);
         formData.append('classIds', JSON.stringify(selectedClasses));
-        photos.forEach(photo => formData.append('photos', photo));
+        files.forEach(file => formData.append('attachments', file));
 
         try {
             await fetch('/api/teacher/announcements', {
@@ -98,7 +137,7 @@ export default function AddAnnouncementPage() {
                 <div className="mt-2 grid grid-cols-3 gap-3">
                     {['note', 'link', 'photo'].map(t => (
                         <button type="button" key={t} onClick={() => setType(t)} className={`px-4 py-2 text-sm rounded-lg border ${type === t ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white hover:bg-gray-50'}`}>
-                            {t === 'note' ? 'Not' : t === 'link' ? 'Link' : 'Fotoğraf'}
+                            {t === 'note' ? 'Not' : t === 'link' ? 'Link' : 'Fotoğraf/Dosya'}
                         </button>
                     ))}
                 </div>
@@ -135,12 +174,28 @@ export default function AddAnnouncementPage() {
                            <textarea id="content" value={content} onChange={e => setContent(e.target.value)} rows={3} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"/>
                         </div>
                         <div>
-                           <label className="block text-sm font-medium text-gray-700">Fotoğraf*</label>
-                           <input type="file" onChange={handleFileChange} required accept="image/*" className="mt-1 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"/>
-                           <div className="mt-2 grid grid-cols-3 gap-2">
-                                {previews.map((src, i) => <img key={i} src={src} className="h-24 w-full object-cover rounded"/>)}
+                        <label className="block text-sm font-medium text-gray-700">Dosyalar* (Resim veya PDF)</label>
+                        <input type="file" onChange={handleFileChange} multiple accept="image/*,application/pdf" className="mt-2 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"/>
+                        {previews.length > 0 && (
+                            <div className="mt-3 grid grid-cols-3 gap-3">
+                            {previews.map((p, i) => (
+                                <div key={i} className="relative">
+                                    {p.type.startsWith('image/') ? (
+                                        <img src={p.url} className="h-28 w-full object-cover rounded-md"/>
+                                    ) : (
+                                        <div className="h-28 w-full rounded-md bg-gray-100 flex flex-col items-center justify-center p-2 border">
+                                            <DocumentIcon className="h-8 w-8 text-gray-400"/>
+                                            <p className="text-xs text-center break-all line-clamp-2 mt-1">{p.name}</p>
+                                        </div>
+                                    )}
+                                    <button type="button" onClick={() => handleRemoveFile(i)} className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-0.5 shadow-md">
+                                        <XMarkIcon className="h-4 w-4"/>
+                                    </button>
+                                </div>
+                            ))}
                             </div>
-                        </div>
+                        )}
+                     </div>
                     </>
                 )}
             </div>

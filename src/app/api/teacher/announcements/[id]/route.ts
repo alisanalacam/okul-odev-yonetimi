@@ -14,7 +14,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       where: { id: announcementId },
       include: {
         announcementClasses: { include: { class: true } }, 
-        photos: true
+        //@ts-ignore
+        attachments: true
       }
     });
 
@@ -47,7 +48,8 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
         teacherUserId: teacherPayload.userId, // Güvenlik kontrolü
       },
       include: {
-        photos: true,
+        //@ts-ignore
+        attachments: true,
       },
     });
 
@@ -57,11 +59,14 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
 
     // Prisma'da onDelete: Cascade ayarlandığı için ilişkili AnnouncementClass kayıtları da silinir.  
     
-    if (announcementToDelete.photos && announcementToDelete.photos.length > 0) {
-      const photoUrls = announcementToDelete.photos.map(p => p.photoUrl);
-      await deleteFromR2(photoUrls);
+    //@ts-ignore
+    if (announcementToDelete.attachments && announcementToDelete.attachments.length > 0) {
+      //@ts-ignore
+      const fileUrls = announcementToDelete.attachments.map(att => att.fileUrl);
+      await deleteFromR2(fileUrls);
     }
-    await prisma.announcementPhoto.deleteMany({
+    //@ts-ignore
+    await prisma.announcementAttachment.deleteMany({
       where: {
         announcementId: announcementId,
       },

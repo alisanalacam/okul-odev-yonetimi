@@ -175,7 +175,7 @@ model Announcement {
   // İlişkiler
   teacher             User                @relation(fields: [teacherUserId], references: [id]) // <-- DEĞİŞİKLİK: Buradaki ilişki artık User modelindeki 'announcements' alanına bağlanıyor.
   announcementClasses AnnouncementClass[]
-  photos              AnnouncementPhoto[]
+  attachments AnnouncementAttachment[]
   
   @@map("announcements")
 }
@@ -232,12 +232,14 @@ model HomeworkAttachment {
   @@map("homework_attachments")
 }
 
-model AnnouncementPhoto {
+model AnnouncementAttachment {
   id             Int          @id @default(autoincrement())
   announcementId Int          @map("announcement_id")
-  photoUrl       String       @map("photo_url")
+  fileUrl        String       @map("file_url")
+  fileName       String       @map("file_name") // YENİ: Dosyanın orijinal adını saklamak için
+  fileType       String       @map("file_type") // YENİ: 'image/jpeg', 'application/pdf' gibi
   announcement   Announcement @relation(fields: [announcementId], references: [id], onDelete: Cascade)
-  @@map("announcement_photos")
+  @@map("announcement_attachments")
 }
 
 

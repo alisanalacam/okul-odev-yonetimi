@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import api from '@/lib/api';
-import { ArrowLeftIcon, LinkIcon } from '@heroicons/react/24/solid';
+import { ArrowLeftIcon, LinkIcon, DocumentIcon } from '@heroicons/react/24/solid';
 
 const AnnouncementContent = ({ announcement }: { announcement: any }) => {
     switch (announcement.type) {
@@ -14,10 +14,19 @@ const AnnouncementContent = ({ announcement }: { announcement: any }) => {
         case 'photo': return (
             <div className="space-y-3">
                 <p className="text-gray-700 whitespace-pre-wrap">{announcement.content}</p>
-                <div className="grid grid-cols-2 gap-3 mt-2">
-                    {announcement.photos?.map((photo: any) => (
-                        <a key={photo.id} href={photo.photoUrl} target="_blank" rel="noopener noreferrer">
-                            <img src={photo.photoUrl} alt="Duyuru Fotoğrafı" className="w-full h-32 object-cover rounded-lg"/>
+                <h4 className="font-semibold text-sm text-gray-600">Ekli Dosyalar:</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {announcement.attachments?.map((att: any) => (
+                        <a key={att.id} href={att.fileUrl} target="_blank" rel="noopener noreferrer" 
+                           className="flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-50 transition-colors">
+                            {att.fileType.startsWith('image/') ? (
+                                <img src={att.fileUrl} alt={att.fileName} className="w-12 h-12 object-cover rounded flex-shrink-0"/>
+                            ) : (
+                                <div className="w-12 h-12 flex items-center justify-center bg-gray-100 rounded flex-shrink-0">
+                                    <DocumentIcon className="h-8 w-8 text-gray-400"/>
+                                </div>
+                            )}
+                            <p className="text-sm font-medium text-gray-800 truncate">{att.fileName}</p>
                         </a>
                     ))}
                 </div>

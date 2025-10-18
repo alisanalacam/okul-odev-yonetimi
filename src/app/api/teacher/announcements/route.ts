@@ -20,7 +20,8 @@ export async function GET(request: NextRequest) {
         where: { teacherUserId: teacherPayload.userId },
         include: {
           announcementClasses: { include: { class: true } },
-          photos: true
+          //@ts-ignore
+          attachments: true
         },
         orderBy: { id: 'desc' }
       });
@@ -43,12 +44,15 @@ export async function POST(request: NextRequest) {
     const type = formData.get('type') as AnnouncementType;
     const linkUrl = formData.get('linkUrl') as string | null;
     const classIds = JSON.parse(formData.get('classIds') as string) as number[];
-    //const photoFiles = formData.getAll('photos') as File[];
-    const photoFiles = formData.getAll('photos') as File[];
+    const files = formData.getAll('attachments') as File[];
 
     if (!title || !type || !classIds || classIds.length === 0) {
       return NextResponse.json({ message: "Başlık, tür ve sınıf seçimi zorunludur." }, { status: 400 });
     }
+
+    if (type === 'photo' && files.length === 0) { // 'photo' türü hala geçerli, dosya anlamına geliyor
+      return NextResponse.json({ message: "Dosya türü için en az bir dosya yüklenmelidir." }, { status: 400 });
+  }
 
     /*let photoUrl: string | undefined = undefined;
     if (type === 'photo' && photoFile) {
@@ -69,14 +73,20 @@ export async function POST(request: NextRequest) {
         },
       });
 
-      if (type === 'photo' && photoFiles.length > 0) {
-        const photoUploadPromises = photoFiles.map(async (file) => {
+      if (type === 'photo' && files.length > 0) {
+        const fileUploadPromises = files.map(async (file) => {
             const fileBuffer = Buffer.from(await file.arrayBuffer());
             const { url } = await uploadToR2(fileBuffer, file.name, file.type);
-            return { announcementId: announcement.id, photoUrl: url };
+            return { 
+                announcementId: announcement.id, 
+                fileUrl: url,
+                fileName: file.name,
+                fileType: file.type
+            };
         });
-        const photoData = await Promise.all(photoUploadPromises);
-        await tx.announcementPhoto.createMany({ data: photoData });
+        const fileData = await Promise.all(fileUploadPromises);
+        //@ts-ignore
+        await tx.announcementAttachment.createMany({ data: fileData });
     }
 
       // 2. Duyuruyu seçilen sınıflara bağla

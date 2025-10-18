@@ -48,21 +48,25 @@ export default function ParentDashboard() {
   return (
     <div className="space-y-5">
       {/* Tarih Seçim Alanı */}
-      <div className="relative">
-        <label htmlFor="homeworkDate" className="block text-sm font-medium text-gray-500 mb-1">Tarih Seç</label>
-        <div className="relative">
-            <input 
-                id="homeworkDate"
-                type="date"
-                value={selectedDate}
-                onChange={e => setSelectedDate(e.target.value)}
-                className="w-full border-white-300 bg-white rounded-lg shadow-sm p-3 pl-10 text-base focus:ring-indigo-500 focus:border-indigo-500"
+      <div className="relative w-full">
+        <label
+          htmlFor="homeworkDate"
+          className="block text-sm font-medium text-gray-500 mb-1"
+        >
+          Tarih Seç
+        </label>
 
-            />
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <CalendarDaysIcon className="h-5 w-5 text-gray-400"/>
-            </div>
+        <div className="absolute inset-y-0 left-0 mt-[22px] pl-3 flex items-center pointer-events-none">
+          <CalendarDaysIcon className="h-5 w-5 text-gray-400" />
         </div>
+
+        <input
+          id="homeworkDate"
+          type="date"
+          value={selectedDate}
+          onChange={(e) => setSelectedDate(e.target.value)}
+          className="block w-full appearance-none border border-gray-300 rounded-lg shadow-sm py-3 pl-10 pr-3 text-base text-gray-900 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+        />
       </div>
 
       {/* Ödev Listesi */}

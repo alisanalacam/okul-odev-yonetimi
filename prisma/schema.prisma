@@ -19,6 +19,7 @@ model User {
   phone             String   @unique
   role              Role
   createdAt         DateTime @default(now()) @map("created_at")
+  oneSignalPlayerId String?  @unique @map("one_signal_player_id")
 
   // İlişkiler
   teacherDetails    TeacherDetails?

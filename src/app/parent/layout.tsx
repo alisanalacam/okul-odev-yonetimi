@@ -6,6 +6,7 @@ import Link from "next/link";
 import { HomeIcon, ChatBubbleBottomCenterTextIcon, MegaphoneIcon, UserCircleIcon } from '@heroicons/react/24/solid';
 import NotificationBell from "@/components/shared/NotificationBell";
 import { usePathname } from 'next/navigation';
+import OneSignalProvider from "@/components/shared/OneSignalProvider";
 
 const ParentHeader = ({ onStudentChange }: { onStudentChange: () => void }) => {
     const { selectedStudent, user } = useAuth(); // Artık doğrudan context'ten okuyor
@@ -50,6 +51,7 @@ export default function ParentLayout({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex flex-col h-screen">
+      <OneSignalProvider />
       <ParentHeader onStudentChange={handleStudentChange} />
       <main className="flex-grow overflow-y-auto bg-gray-50 p-4">
         {children}

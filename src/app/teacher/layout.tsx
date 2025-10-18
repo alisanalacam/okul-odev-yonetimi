@@ -7,6 +7,7 @@ import Link from "next/link";
 import { HomeIcon, ChatBubbleBottomCenterTextIcon, MegaphoneIcon, UserCircleIcon, ArrowLeftOnRectangleIcon } from '@heroicons/react/24/solid';
 import NotificationBell from "@/components/shared/NotificationBell";
 import api from "@/lib/api"; // Header'ın veri çekmesi için
+import OneSignalProvider from "@/components/shared/OneSignalProvider";
 
 // ------------- HEADER BİLEŞENİ -------------
 const TeacherHeader = () => {
@@ -128,6 +129,7 @@ export default function TeacherLayout({ children }: { children: ReactNode }) {
   // Yükleme bitti ve kullanıcı geçerliyse, layout'u render et
   return (
     <div className="flex flex-col h-screen">
+      <OneSignalProvider />
       <TeacherHeader />
       {/* İçeriğe, header ve nav bar yükseklikleri kadar padding ver */}
       <main className="flex-grow overflow-y-auto bg-gray-50 p-4"> {/* pt ve pb değerlerini ayarlayın */}

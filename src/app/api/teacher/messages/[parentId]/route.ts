@@ -1,6 +1,7 @@
 import { NextResponse, NextRequest } from 'next/server';
 import { prisma } from '@/lib/db';
 import { verifyTeacher } from '@/lib/auth-utils';
+import { sendNotification } from '@/lib/onesignal-sender'; 
 
 // Mesaj geçmişini getir
 export async function GET(request: NextRequest, { params }: { params: Promise<{ parentId: string }> }) {
@@ -43,6 +44,23 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     await prisma.notification.create({
         data: { userId: parentId, type: 'message', referenceId: teacherPayload.userId }
     });
+
+    try {
+        const parent = await prisma.user.findUnique({ where: { id: parentId } });
+
+        teacherPayload.name
+        
+        if (parent?.oneSignalPlayerId) {
+            await sendNotification({
+                playerIds: [parent.oneSignalPlayerId],
+                title: "Öğretmenden Yeni Bir Mesaj Var!",
+                message: `Öğretmeninizden yeni mesaj var.`,
+                url: `https://okul-odev.vobion.com/parent/messages/${teacherPayload.userId}`
+            });
+        }
+    } catch (error) {
+        console.error("OneSignal push notification gönderilirken hata:", error);
+    }
     
     return NextResponse.json(message, { status: 201 });
 }

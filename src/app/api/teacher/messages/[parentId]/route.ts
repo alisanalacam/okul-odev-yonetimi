@@ -48,12 +48,12 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     try {
         const parent = await prisma.user.findUnique({ where: { id: parentId } });
 
-        console.log('parent')
-        console.log(parent)
-        if (parent?.oneSignalPlayerId) {
+        //@ts-ignore
+        const oneSignalPlayerId = parent?.oneSignalPlayerId;
+        if (oneSignalPlayerId) {
             console.log('parent.oneSignalPlayerId')
             await sendNotification({
-                playerIds: [parent.oneSignalPlayerId],
+                playerIds: [oneSignalPlayerId],
                 title: "Öğretmenden Yeni Bir Mesaj Var!",
                 message: `Öğretmeninizden yeni mesaj var.`,
                 url: `https://okul-odev.vobion.com/parent/messages/${teacherPayload.userId}`

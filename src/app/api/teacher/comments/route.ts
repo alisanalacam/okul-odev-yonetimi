@@ -1,6 +1,7 @@
 import { NextResponse, NextRequest } from 'next/server';
 import { prisma } from '@/lib/db';
 import { verifyTeacher } from '@/lib/auth-utils';
+import { sendNotification } from '@/lib/onesignal-sender'; 
 
 export async function POST(request: NextRequest) {
   const teacherPayload = await verifyTeacher(request);
@@ -10,7 +11,7 @@ export async function POST(request: NextRequest) {
 
   const submission = await prisma.homeworkSubmission.findUnique({
       where: { id: submissionId },
-      select: { homeworkId: true }
+      include: { homework: { include: { book: true } } }
   });
 
   if (!submission) {
@@ -33,6 +34,27 @@ export async function POST(request: NextRequest) {
           referenceId: submissionId
       }
   });
+
+  try {
+      const parent = await prisma.user.findUnique({ where: { id: parentUserId } });
+
+      //@ts-ignore
+      const oneSignalPlayerId = parent?.oneSignalPlayerId;
+
+      //@ts-ignore
+      const messageContent = `${submission.homework.book.name} isimli ödeve öğretmeniniz bir yorum yaptı.`;
+
+      if (oneSignalPlayerId) {
+          await sendNotification({
+              playerIds: [oneSignalPlayerId],
+              title: "Öğretmenden Yeni Bir Mesaj Var!",
+              message: messageContent,
+              url: `https://okul-odev.vobion.com/parent/submission/${submissionId}`
+          });
+      }
+  } catch (error) {
+      console.error("OneSignal push notification gönderilirken hata:", error);
+  }
 
   return NextResponse.json(newComment, { status: 201 });
 }

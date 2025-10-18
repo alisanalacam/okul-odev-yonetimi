@@ -6,9 +6,10 @@ interface NotificationPayload {
   }
   
   export async function sendNotification({ playerIds, title, message, url }: NotificationPayload) {
+    console.log('sendNotification')
     if (playerIds.length === 0) return;
   
-    const response = await fetch('https://onesignal.com/api/v1/notifications', {
+    const response = await fetch('https://api.onesignal.com/notifications', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -27,4 +28,5 @@ interface NotificationPayload {
     if (!response.ok) {
       console.error("OneSignal notification failed:", await response.json());
     }
+    console.log('sendNotification success')
   }

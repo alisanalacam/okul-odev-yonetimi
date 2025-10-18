@@ -51,6 +51,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
         console.log('parent')
         console.log(parent)
         if (parent?.oneSignalPlayerId) {
+            console.log('parent.oneSignalPlayerId')
             await sendNotification({
                 playerIds: [parent.oneSignalPlayerId],
                 title: "Öğretmenden Yeni Bir Mesaj Var!",

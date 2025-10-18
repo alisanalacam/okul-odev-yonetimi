@@ -7,6 +7,7 @@ export async function POST(request: NextRequest) {
     if (!authHeader?.startsWith('Bearer ')) return NextResponse.json({}, { status: 401 });
     const token = authHeader.split(' ')[1];
     const payload = jwt.verify(token, process.env.JWT_SECRET!) as { userId: number };
+    console.log('kayıt için buraya geldi mi?')
     
     const { playerId } = await request.json();
     if (!playerId) return NextResponse.json({ message: "Player ID gerekli" }, { status: 400 });

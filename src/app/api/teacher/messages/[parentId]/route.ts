@@ -48,8 +48,8 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     try {
         const parent = await prisma.user.findUnique({ where: { id: parentId } });
 
-        teacherPayload.name
-        
+        console.log('parent')
+        console.log(parent)
         if (parent?.oneSignalPlayerId) {
             await sendNotification({
                 playerIds: [parent.oneSignalPlayerId],

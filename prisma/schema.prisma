@@ -242,7 +242,6 @@ model AnnouncementAttachment {
   @@map("announcement_attachments")
 }
 
-
 // ENUM'lar
 
 enum Role {

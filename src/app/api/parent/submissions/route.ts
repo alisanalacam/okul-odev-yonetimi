@@ -14,6 +14,16 @@ export async function POST(request: NextRequest) {
   const status = formData.get('status') as SubmissionStatus;
   const parentNotes = formData.get('parentNotes') as string;
   const photos = formData.getAll('photos') as File[];
+
+  const homework = await prisma.homework.findUnique({ where: { id: homeworkId } });
+  if (!homework) return NextResponse.json({ message: "Ödev bulunamadı." }, { status: 404 });
+
+  const oneWeekAgo = new Date();
+  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+  if (new Date(homework.dueDate) < oneWeekAgo) {
+    return NextResponse.json({ message: "Bu ödevin teslim süresi 1 haftadan fazla geçtiği için işlem yapamazsınız." }, { status: 403 }); // 403 Forbidden
+  }
   
   const photoUrls = [];
   for (const photo of photos) {

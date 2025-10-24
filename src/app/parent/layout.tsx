@@ -3,7 +3,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect, ReactNode } from "react";
 import Link from "next/link";
-import { HomeIcon, ChatBubbleBottomCenterTextIcon, MegaphoneIcon, UserCircleIcon } from '@heroicons/react/24/solid';
+import { HomeIcon, ChatBubbleBottomCenterTextIcon, MegaphoneIcon, UserCircleIcon, BookOpenIcon } from '@heroicons/react/24/solid';
 import NotificationBell from "@/components/shared/NotificationBell";
 import { usePathname } from 'next/navigation';
 import OneSignalProvider from "@/components/shared/OneSignalProvider";
@@ -59,7 +59,7 @@ export default function ParentLayout({ children }: { children: ReactNode }) {
       <nav className="bg-white sticky bottom-0 z-10">
       <div className="flex justify-around items-center p-2 border-t-2 border-gray-200 border-t-gray-200">
             <Link href="/parent" className={`flex flex-col items-center justify-center p-1 w-22 ${pathname === '/parent' ? 'text-indigo-600' : 'text-gray-600'}`}><HomeIcon className="h-6 w-6" /><span className="text-xs">Ana Sayfa</span></Link>
-            <Link href="/parent/messages" className={`flex flex-col items-center justify-center p-1 w-22 ${pathname.startsWith('/parent/messages') ? 'text-indigo-600' : 'text-gray-600'}`}><ChatBubbleBottomCenterTextIcon className="h-6 w-6" /><span className="text-xs">Mesajlar</span></Link>
+            <Link href="/parent/book-logs" className={`flex flex-col items-center justify-center p-1 w-22 ${pathname.startsWith('/parent/book-logs') ? 'text-indigo-600' : 'text-gray-600'}`}><BookOpenIcon className="h-6 w-6" /><span className="text-xs">Kitaplar</span></Link>
             <Link href="/parent/announcements" className={`flex flex-col items-center justify-center p-1 w-22 ${pathname.startsWith('/parent/announcements') ? 'text-indigo-600' : 'text-gray-600'}`}><MegaphoneIcon className="h-6 w-6" /><span className="text-xs">Duyurular</span></Link>
             <Link href="/parent/profile" className={`flex flex-col items-center justify-center p-1 w-22 ${pathname.startsWith('/parent/profile') ? 'text-indigo-600' : 'text-gray-600'}`}><UserCircleIcon className="h-6 w-6" /><span className="text-xs">Profil</span></Link>
          </div>

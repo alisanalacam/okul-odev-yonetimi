@@ -14,13 +14,14 @@ interface HomeworkItem {
   notes: string;
   files: File[];
   previews: { url: string; type: string; name: string }[];
+  isExtra: boolean;
 }
 
 export default function AddHomeworkPage() {
     const { token } = useAuth();
     const router = useRouter();
     const [books, setBooks] = useState<any[]>([]);
-    const [homeworkItems, setHomeworkItems] = useState<HomeworkItem[]>([{ id: Date.now(), bookId: '', notes: '', files: [], previews: [] }]);
+    const [homeworkItems, setHomeworkItems] = useState<HomeworkItem[]>([{ id: Date.now(), bookId: '', notes: '', files: [], previews: [], isExtra: false }]);
     const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -31,7 +32,7 @@ export default function AddHomeworkPage() {
         }
     }, [token]);
 
-    const handleItemChange = (id: number, field: 'bookId' | 'notes', value: string) => {
+    const handleItemChange = (id: number, field: 'bookId' | 'notes' | 'isExtra', value: string | boolean) => {
         setHomeworkItems(items => items.map(item => item.id === id ? { ...item, [field]: value } : item));
     };
 
@@ -97,7 +98,8 @@ export default function AddHomeworkPage() {
             bookId: '', 
             notes: '', 
             files: [], // Boş dizi olarak başlatmak "iterable" hatasını çözer
-            previews: [] // Boş dizi olarak başlatmak "iterable" hatasını çözer
+            previews: [], // Boş dizi olarak başlatmak "iterable" hatasını çözer
+            isExtra: false,
         }]);
     };
     
@@ -197,6 +199,16 @@ export default function AddHomeworkPage() {
                             ))}
                           </div>
                         )}
+                    </div>
+                    <div className="flex items-center gap-2 mt-2">
+                        <input 
+                            type="checkbox" 
+                            id={`isExtra-${item.id}`} 
+                            checked={item.isExtra} 
+                            onChange={(e) => handleItemChange(item.id, 'isExtra', e.target.checked)}
+                            className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                        />
+                        <label htmlFor={`isExtra-${item.id}`} className="text-sm text-gray-700">Bu bir ekstra ödevdir (puanlı, zorunlu değil)</label>
                     </div>
                 </div>
             ))}

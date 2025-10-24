@@ -83,6 +83,7 @@ model Student {
   class              Class                @relation(fields: [classId], references: [id])
   parent             User                 @relation(fields: [parentUserId], references: [id], onDelete: Cascade)
   homeworkSubmissions HomeworkSubmission[]
+  bookLogs BookLog[]
   
   @@map("students")
 }
@@ -107,6 +108,7 @@ model Homework {
   classId       Int      @map("class_id")
   bookId        Int?
   notes         String?  @db.Text
+  isExtra       Boolean  @default(false) @map("is_extra")
   dueDate       DateTime @db.Date @map("due_date")
   createdAt     DateTime @default(now()) @map("created_at")
 
@@ -220,6 +222,16 @@ model Notification {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("notifications")
+}
+
+model BookLog {
+  id          Int      @id @default(autoincrement())
+  studentId   Int      @map("student_id")
+  bookName    String   @map("book_name")
+  description String?  @db.Text
+  createdAt   DateTime @default(now()) @map("created_at")
+  student     Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  @@map("book_logs")
 }
 
 

@@ -4,6 +4,7 @@ import { useAuth } from "@/context/AuthContext";
 import api from "@/lib/api";
 import { useEffect, useState } from "react";
 import { ArrowLeftOnRectangleIcon } from '@heroicons/react/24/solid';
+import Link from "next/link";
 
 export default function TeacherProfilePage() {
     const { token, logout } = useAuth();
@@ -36,6 +37,13 @@ export default function TeacherProfilePage() {
                     <span className="text-gray-600">Branş</span>
                     <span className="font-semibold">{profile.branch}</span>
                 </div>
+            </div>
+
+            <div>
+                <h3 className="text-lg font-semibold text-gray-700 mb-2">Öğrenci Listesine Göz At</h3>
+                <Link href={`/teacher/students`} className="bg-blue-500 text-white px-4 py-3 rounded-full text-sm font-medium">
+                    Öğrenci Listesine Git
+                </Link>
             </div>
 
             <div>

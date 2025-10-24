@@ -10,16 +10,48 @@ import { ArrowLeftIcon, CheckCircleIcon, XCircleIcon, ClockIcon, ChatBubbleOvalL
 
 // Tekrar kullanılabilir Widget bileşeni
 const StatWidget = ({ title, count, icon: Icon, color, isActive, onClick }: any) => (
-  <button onClick={onClick} className={`w-full text-left p-3 rounded-lg flex items-center gap-3 transition-all ${isActive ? `${color} text-blue-900 shadow-lg` : 'bg-gray-100 text-gray-700 hover:bg-gray-50'}`}>
-    <div className={`p-2 rounded-lg ${isActive ? 'bg-blue-500 bg-opacity-20' : 'bg-gray-100'}`}>
-      <Icon className={`h-6 w-6 ${isActive ? 'text-white' : color}`} />
-    </div>
-    <div>
-      <p className="text-sm">{title}</p>
-      <p className="text-2xl font-bold">{count}</p>
-    </div>
-  </button>
+  <div
+  onClick={onClick}
+  className={`cursor-pointer rounded-lg p-4 shadow-md transition-all duration-200 
+    ${isActive ? 'bg-blue-500 bg-opacity-20 text-white' : 'bg-white hover:bg-gray-50'}
+  `}
+  >
+  <div className="flex flex-col items-center text-center space-y-2">
+    {/* Icon */}
+    <Icon className={`h-10 w-10 ${color}`} />
+
+    {/* Sayı */}
+    <div className="text-2xl font-bold">{count}</div>
+
+    {/* Başlık */}
+    <div className={`text-sm text-gray-600 ${isActive ? 'text-white' : 'text-gray-600'}`}>{title}</div>
+  </div>
+  </div>
 );
+
+const renderNotes = (notes: string) => {
+  // http veya https ile başlayan linkleri bulur
+  const urlRegex = /(https?:\/\/[^\s]+)/g
+  const parts = notes.split(urlRegex)
+
+  return parts.map((part, index) => {
+    if (part.match(urlRegex)) {
+      return (
+        <a
+          key={index}
+          href={part}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-600 hover:underline break-all"
+        >
+          {part}
+        </a>
+      )
+    }
+    return <span key={index}>{part}</span>
+  })
+}
+
 
 // Öğrenci satırındaki durum rozeti
 const StatusBadge = ({ status }: { status: string }) => {
@@ -123,16 +155,17 @@ export default function HomeworkDetailPage() {
         </button>
       </div>
 
-      <div className="grid grid-cols-4 gap-4 bg-white rounded-lg shadow p-4">
+      <div className="grid grid-cols-1 gap-1 bg-white rounded-lg shadow p-4">
         {/* Notes kısmı: 1 kolon genişliğinde */}
         <div className="col-span-1">
-          <p className="text-sm text-gray-500">{homework.notes}</p>
+          <p className="text-sm text-gray-500">{renderNotes(homework.notes || '')}</p>
         </div>
+      </div>
 
-        {/* Attachments kısmı: 3 kolon genişliğinde */}
-        {homework.attachments && homework.attachments.length > 0 && (
-          <div className="col-span-3">
-            <h4 className="font-semibold text-sm text-gray-600 mb-2">Öğretmenin Eklediği Dosyalar:</h4>
+      {homework.attachments && homework.attachments.length > 0 && (
+        <div className="grid grid-cols-1 gap-1 bg-white rounded-lg shadow p-4">
+          <div className="col-span-2">
+            <h5 className="font-semibold text-sm text-gray-600 mb-2">Öğretmenin Eklediği Dosyalar:</h5>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-1">
               {homework.attachments.map((att: any) => (
                 <a
@@ -158,9 +191,9 @@ export default function HomeworkDetailPage() {
               ))}
             </div>
           </div>
-        )}
-      </div>
-
+        
+        </div>
+      )}
 
       {/* Widget'lar */}
       <div className="grid grid-cols-3 gap-3">

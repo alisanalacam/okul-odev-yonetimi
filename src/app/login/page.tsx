@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { AcademicCapIcon } from '@heroicons/react/24/outline'; // Tailwind Heroicons kullanıyorsan
@@ -11,8 +11,27 @@ export default function LoginPage() {
   const [phone, setPhone] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+  const { login, isLoading, user, token } = useAuth();
   const router = useRouter();
+
+  useEffect(() => {
+    // AuthContext'in localStorage'dan veri okuma işlemi bitene kadar bekle
+    if (isLoading) {
+      return;
+    }
+
+    // Yükleme bittiğinde, eğer kullanıcı zaten giriş yapmışsa (token ve user varsa),
+    // rolüne göre doğru sayfaya yönlendir.
+    if (token && user) {
+      if (user.role === 'admin') {
+        router.replace('/admin');
+      } else if (user.role === 'teacher') {
+        router.replace('/teacher');
+      } else if (user.role === 'parent') {
+        router.replace('/parent');
+      }
+    }
+  }, [isLoading, user, token, router]); // Bu değerler değiştiğinde useEffect tekrar çalışır.
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,6 +68,14 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
+
+  if (isLoading || token) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-gray-50">
+        Oturum kontrol ediliyor, lütfen bekleyin...
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-500 p-4">

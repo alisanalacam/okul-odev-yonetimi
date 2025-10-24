@@ -3,6 +3,7 @@
 import { useAuth } from "@/context/AuthContext";
 import api from "@/lib/api";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { UserCircleIcon, ArrowLeftOnRectangleIcon } from '@heroicons/react/24/solid';
 
 export default function ParentProfilePage() {
@@ -39,6 +40,13 @@ export default function ParentProfilePage() {
                  <div className="flex justify-between items-center">
                     <span className="text-gray-600">Telefon</span>
                     <span className="font-semibold text-gray-900">{profile.phone}</span>
+                </div>
+            </div>
+
+            <div>
+                <h3 className="text-lg font-semibold text-gray-700 mb-3">Mesajlarım</h3>
+                <div className="space-y-3">
+                    <Link href="/parent/messages" className="bg-blue-500 text-white px-4 py-3 rounded-full text-sm font-medium">Mesajlarıma Git</Link>
                 </div>
             </div>
 

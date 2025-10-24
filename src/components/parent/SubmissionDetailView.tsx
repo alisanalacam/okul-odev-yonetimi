@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, FormEvent } from 'react';
+import { useState, useEffect, FormEvent, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { ArrowLeftIcon, CheckCircleIcon, XCircleIcon, CameraIcon, XMarkIcon, DocumentIcon } from '@heroicons/react/24/solid';
@@ -35,6 +35,29 @@ export default function SubmissionDetailView({ initialData, refreshData }: Submi
     useEffect(() => {
         return () => previews.forEach(url => URL.revokeObjectURL(url));
     }, [previews]);
+
+    const renderNotes = (notes: string) => {
+      // http veya https ile başlayan linkleri bulur
+      const urlRegex = /(https?:\/\/[^\s]+)/g
+      const parts = notes.split(urlRegex)
+    
+      return parts.map((part, index) => {
+        if (part.match(urlRegex)) {
+          return (
+            <a
+              key={index}
+              href={part}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 hover:underline break-all"
+            >
+              {part}
+            </a>
+          )
+        }
+        return <span key={index}>{part}</span>
+      })
+    }
 
     // Dosya seçildiğinde state'leri güncelle
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -96,9 +119,19 @@ export default function SubmissionDetailView({ initialData, refreshData }: Submi
         }
     };
 
+    const isLocked = useMemo(() => {
+      if (!initialData?.homework?.dueDate) return false; // Veri henüz gelmediyse kilitli değil
+      const oneWeekAgo = new Date();
+      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+      return new Date(initialData.homework.dueDate) < oneWeekAgo;
+  }, [initialData?.homework?.dueDate]);
+
     if (!initialData) return <div className="text-center py-10">Yükleniyor...</div>;
 
     const { homework, submission } = initialData;
+
+    // Ödevin süresinin geçip geçmediğini hesapla
+  
 
     return (
         <div className="space-y-6">
@@ -119,16 +152,17 @@ export default function SubmissionDetailView({ initialData, refreshData }: Submi
                 </div>
             </div>
 
-            <div className="grid grid-cols-4 gap-4 bg-white rounded-lg shadow p-4">
+            <div className="grid grid-cols-1 gap-1 bg-white rounded-lg shadow p-4">
               {/* Notes kısmı: 1 kolon genişliğinde */}
               <div className="col-span-1">
-                <p className="text-sm text-gray-500">{homework.notes}</p>
+                <p className="text-sm text-gray-500">{renderNotes(homework.notes || '')}</p>
               </div>
+            </div>
 
-              {/* Attachments kısmı: 3 kolon genişliğinde */}
-              {homework.attachments && homework.attachments.length > 0 && (
-                <div className="col-span-3">
-                  <h4 className="font-semibold text-sm text-gray-600 mb-2">Öğretmenin Eklediği Dosyalar:</h4>
+            {homework.attachments && homework.attachments.length > 0 && (
+              <div className="grid grid-cols-1 gap-1 bg-white rounded-lg shadow p-4">
+                <div className="col-span-1">
+                  <h5 className="font-semibold text-sm text-gray-600 mb-2">Öğretmenin Eklediği Dosyalar:</h5>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-1">
                     {homework.attachments.map((att: any) => (
                       <a
@@ -154,18 +188,24 @@ export default function SubmissionDetailView({ initialData, refreshData }: Submi
                     ))}
                   </div>
                 </div>
+                </div>
               )}
-            </div>
+
+            {isLocked && (
+                <div className="p-3 bg-yellow-100 text-yellow-800 rounded-lg text-center text-sm font-semibold">
+                    Bu ödevin teslim süresi 1 haftayı geçtiği için artık işaretleme yapamazsınız.
+                </div>
+            )}
 
             {/* Teslim Formu Kartı */}
             <div className="bg-white p-4 rounded-lg shadow space-y-6">
                 <div>
                   <h3 className="font-semibold text-gray-900">Ödev Durumunu Belirle*</h3>
                   <div className="mt-2 grid grid-cols-2 gap-3">
-                      <button onClick={() => setStatus('completed')} className={`flex items-center justify-center gap-2 py-3 px-4 rounded-lg border-2 transition-colors ${status === 'completed' ? 'bg-green-500 text-white border-green-500' : 'bg-white text-gray-700 border-gray-300 hover:bg-green-50'}`}>
+                      <button onClick={() => setStatus('completed')} disabled={isLocked} className={`flex ${isLocked ? 'opacity-50 cursor-not-allowed' : ''} items-center justify-center gap-2 py-3 px-4 rounded-lg border-2 transition-colors ${status === 'completed' ? 'bg-green-500 text-white border-green-500' : 'bg-white text-gray-700 border-gray-300 hover:bg-green-50'}`}>
                         <CheckCircleIcon className="h-6 w-6"/> <span className="font-semibold">Yaptı</span>
                       </button>
-                      <button onClick={() => setStatus('not_completed')} className={`flex items-center justify-center gap-2 py-3 px-4 rounded-lg border-2 transition-colors ${status === 'not_completed' ? 'bg-red-500 text-white border-red-500' : 'bg-white text-gray-700 border-gray-300 hover:bg-red-50'}`}>
+                      <button onClick={() => setStatus('not_completed')} disabled={isLocked} className={`flex ${isLocked ? 'opacity-50 cursor-not-allowed' : ''} items-center justify-center gap-2 py-3 px-4 rounded-lg border-2 transition-colors ${status === 'not_completed' ? 'bg-red-500 text-white border-red-500' : 'bg-white text-gray-700 border-gray-300 hover:bg-red-50'}`}>
                         <XCircleIcon className="h-6 w-6"/> <span className="font-semibold">Yapmadı</span>
                       </button>
                   </div>
@@ -173,7 +213,7 @@ export default function SubmissionDetailView({ initialData, refreshData }: Submi
                 
                 <div>
                     <label htmlFor="notes" className="block text-sm font-medium text-gray-700">Not Ekle <span className="text-gray-400">(İsteğe Bağlı)</span></label>
-                    <textarea id="notes" value={notes} onChange={e => setNotes(e.target.value)} rows={3} placeholder="Öğretmeninize iletmek istediğiniz bir not var mı?" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"/>
+                    <textarea disabled={isLocked} id="notes" value={notes} onChange={e => setNotes(e.target.value)} rows={3} placeholder="Öğretmeninize iletmek istediğiniz bir not var mı?" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"/>
                 </div>
 
                 <div>
@@ -182,7 +222,7 @@ export default function SubmissionDetailView({ initialData, refreshData }: Submi
                         <CameraIcon className="h-6 w-6 text-gray-400"/>
                         <span className="text-indigo-600 font-semibold">Fotoğraf Seç</span>
                     </label>
-                    <input id="photo-upload" type="file" multiple accept="image/*" onChange={handleFileChange} className="sr-only"/>
+                    <input disabled={isLocked} id="photo-upload" type="file" multiple accept="image/*" onChange={handleFileChange} className="sr-only"/>
                     
                     {previews.length > 0 && (
                       <div className="mt-3 grid grid-cols-3 gap-3">
@@ -198,7 +238,7 @@ export default function SubmissionDetailView({ initialData, refreshData }: Submi
                     )}
                 </div>
 
-                <button onClick={handleSubmit} disabled={isSubmitting || !status} className="w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-lg shadow hover:bg-indigo-700 transition-colors disabled:bg-indigo-300 disabled:cursor-not-allowed">
+                <button onClick={handleSubmit} disabled={isSubmitting || !status || isLocked} className="w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-lg shadow hover:bg-indigo-700 transition-colors disabled:bg-indigo-300 disabled:cursor-not-allowed">
                     {isSubmitting ? 'Kaydediliyor...' : 'Ödevi Gönder'}
                 </button>
             </div>

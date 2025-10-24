@@ -6,7 +6,7 @@ import { useAuth } from '@/context/AuthContext';
 import api from '@/lib/api';
 import Link from 'next/link';
 /*import { ArrowLeftIcon, UsersIcon, UserPlusIcon, UserMinusIcon, ChatBubbleOvalLeftEllipsisIcon } from '@heroicons/react/24/solid';*/
-import { ArrowLeftIcon, CheckCircleIcon, XCircleIcon, ClockIcon, ChatBubbleOvalLeftEllipsisIcon, TrashIcon, DocumentIcon } from '@heroicons/react/24/solid';
+import { ArrowLeftIcon, CheckCircleIcon, XCircleIcon, ClockIcon, ChatBubbleOvalLeftEllipsisIcon, TrashIcon, DocumentIcon, ExclamationCircleIcon } from '@heroicons/react/24/solid';
 
 // Tekrar kullanılabilir Widget bileşeni
 const StatWidget = ({ title, count, icon: Icon, color, isActive, onClick }: any) => (
@@ -159,6 +159,15 @@ export default function HomeworkDetailPage() {
         {/* Notes kısmı: 1 kolon genişliğinde */}
         <div className="col-span-1">
           <p className="text-sm text-gray-500">{renderNotes(homework.notes || '')}</p>
+        </div>
+        <div className="col-span-1">
+          <p>
+            {homework.isExtra ? (
+              <span className="text-sm text-gray-500 dark:text-yellow-700 bg-yellow-100 p-2 rounded-md flex items-center gap-2"><ExclamationCircleIcon className="h-5 w-5" /> Bu bir ekstra ödevdir. Puanlı değildir.</span>
+            ) : (
+              <p></p>
+            )}
+          </p>
         </div>
       </div>
 

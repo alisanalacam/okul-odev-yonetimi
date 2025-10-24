@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import api from '@/lib/api';
-import { ArrowLeftIcon, CheckCircleIcon, XCircleIcon, PaperClipIcon, ChatBubbleBottomCenterTextIcon } from '@heroicons/react/24/solid';
+import { ArrowLeftIcon, CheckCircleIcon, XCircleIcon, PaperClipIcon, ChatBubbleBottomCenterTextIcon, ExclamationCircleIcon } from '@heroicons/react/24/solid';
 
 export default function SubmissionDetailPage() {
     const { token, user } = useAuth();
@@ -56,6 +56,13 @@ export default function SubmissionDetailPage() {
                     <span className="font-semibold">{StatusInfo.text}</span>
                 </div>
                 <p className="text-gray-600 dark:text-gray-400">{submission.notes}</p>
+                <p>
+                  {submission.homework.isExtra ? (
+                    <span className="text-sm text-gray-500 dark:text-yellow-700 bg-yellow-100 p-2 rounded-md flex items-center gap-2"><ExclamationCircleIcon className="h-5 w-5" /> Bu bir ekstra ödevdir. Puanlı değildir.</span>
+                  ) : (
+                    <p></p>
+                  )}
+                  </p>
             </div>
 
             {submission.parentNotes && (

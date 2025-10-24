@@ -18,17 +18,17 @@ export default function SelectClassPage() {
     router.push('/teacher');
   };
 
-  if (!profile) return <div>Yükleniyor...</div>;
+  if (!profile) return <div className="text-center py-10 dark:text-gray-900">Yükleniyor...</div>;
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Lütfen Sınıf Seçin</h1>
+      <h1 className="text-2xl font-bold mb-4 dark:text-gray-900">Lütfen Sınıf Seçin</h1>
       <div className="space-y-3">
         {profile.classes.map((cls: any) => (
           <button 
             key={cls.id} 
             onClick={() => handleSelectClass(cls.id)}
-            className="w-full text-left p-4 bg-white rounded-lg shadow font-semibold text-lg hover:bg-blue-50"
+            className="w-full text-left p-4 bg-white rounded-lg shadow font-semibold text-lg hover:bg-blue-50 dark:text-gray-700"
           >
             {cls.grade} - {cls.section} Şubesi
           </button>

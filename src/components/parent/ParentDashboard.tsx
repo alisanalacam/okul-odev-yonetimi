@@ -56,7 +56,7 @@ export default function ParentDashboard() {
           Tarih Seç
         </label>
 
-        <div className="absolute inset-y-0 left-0 mt-[22px] pl-3 flex items-center pointer-events-none">
+        <div className="absolute inset-y-0 left-0 mt-[22px] pl-3 flex items-center pointer-events-none dark:text-gray-700 dark:bg-white">
           <CalendarDaysIcon className="h-5 w-5 text-gray-400" />
         </div>
 
@@ -102,8 +102,8 @@ export default function ParentDashboard() {
             // Boş Durum
             <div className="text-center text-gray-500 py-10 bg-white rounded-lg shadow">
               <ClipboardDocumentListIcon className="h-12 w-12 mx-auto text-gray-400"/>
-              <p className="mt-2 font-semibold">Ödev Bulunmuyor</p>
-              <p className="text-sm">Bu tarih için atanmış bir ödev yok.</p>
+              <p className="mt-2 font-semibold dark:text-gray-700">Ödev Bulunmuyor</p>
+              <p className="text-sm dark:text-gray-400">Bu tarih için atanmış bir ödev yok.</p>
             </div>
           )}
         </div>

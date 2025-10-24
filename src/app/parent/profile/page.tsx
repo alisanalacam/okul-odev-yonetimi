@@ -20,8 +20,8 @@ export default function ParentProfilePage() {
         }
     }, [token]);
 
-    if (loading) return <div className="text-center py-10">Profil bilgileri yükleniyor...</div>;
-    if (!profile) return <div className="text-center py-10">Profil bilgileri bulunamadı.</div>;
+    if (loading) return <div className="text-center py-10 dark:text-gray-900">Profil bilgileri yükleniyor...</div>;
+    if (!profile) return <div className="text-center py-10 dark:text-gray-900">Profil bilgileri bulunamadı.</div>;
 
     return (
         <div className="space-y-6">

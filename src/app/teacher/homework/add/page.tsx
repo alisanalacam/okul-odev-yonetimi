@@ -154,7 +154,7 @@ export default function AddHomeworkPage() {
 
             <div className="bg-white p-4 rounded-lg shadow">
                 <label htmlFor="date" className="block text-sm font-medium text-gray-700">Ödev Tarihi</label>
-                <input type="date" id="date" value={date} onChange={e => setDate(e.target.value)} className="w-full p-2 border rounded"/>
+                <input type="date" id="date" value={date} onChange={e => setDate(e.target.value)} className="w-full p-2 border rounded dark:text-gray-800"/>
             </div>
             
             {homeworkItems.map((item) => (
@@ -164,21 +164,21 @@ export default function AddHomeworkPage() {
                     )}
                     <div>
                         <label htmlFor={`bookId-${item.id}`} className="block text-sm font-medium text-gray-700">Kitap</label>
-                        <select id={`bookId-${item.id}`} value={item.bookId} onChange={e => handleItemChange(item.id, 'bookId', e.target.value)} className="w-full p-2 border rounded">
+                        <select id={`bookId-${item.id}`} value={item.bookId} onChange={e => handleItemChange(item.id, 'bookId', e.target.value)} className="w-full p-2 border rounded dark:text-gray-800">
                             <option value="" disabled>Kitap Seçin...</option>
                             {books.map(book => <option key={book.id} value={book.id}>{book.name}</option>)}
                         </select>
                     </div>
                      <div>
                         <label htmlFor={`notes-${item.id}`} className="block text-sm font-medium text-gray-700">Açıklama / Sayfa Aralığı</label>
-                        <textarea id={`notes-${item.id}`} value={item.notes} onChange={e => handleItemChange(item.id, 'notes', e.target.value)} placeholder="Örn: 15-20. sayfalar arası" rows={2} className="w-full p-2 border rounded"/>
+                        <textarea id={`notes-${item.id}`} value={item.notes} onChange={e => handleItemChange(item.id, 'notes', e.target.value)} placeholder="Örn: 15-20. sayfalar arası" rows={2} className="w-full p-2 border rounded dark:text-gray-800"/>
                     </div>
                     <div>
                         <label className="text-sm font-medium text-gray-700">Dosya Ekle <span className="text-gray-400">(Resim, PDF vb.)</span></label>
                         <label htmlFor={`photo-upload-${item.id}`} className="mt-1 flex justify-center items-center gap-2 w-full px-6 py-3 border-2 border-gray-300 border-dashed rounded-md cursor-pointer hover:border-indigo-500">
                            <CameraIcon className="h-6 w-6 text-gray-400"/> Seç
                         </label>
-                        <input id={`photo-upload-${item.id}`} type="file" multiple accept="image/*,application/pdf" onChange={(e) => handleFileChange(item.id, e)} className="sr-only"/>
+                        <input id={`photo-upload-${item.id}`} type="file" multiple accept="image/*,application/pdf" onChange={(e) => handleFileChange(item.id, e)} className="sr-only dark:text-gray-800"/>
                         
                         {item.previews.length > 0 && (
                           <div className="mt-3 grid grid-cols-3 gap-3">

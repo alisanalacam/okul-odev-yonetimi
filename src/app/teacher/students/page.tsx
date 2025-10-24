@@ -23,7 +23,7 @@ export default function TeacherStudentsPage() {
     return (
         <div className="space-y-5">
             <h2 className="text-2xl font-bold text-gray-800">Öğrenci Listesi</h2>
-            {loading ? <p>Öğrenci listesi yükleniyor...</p> : (
+            {loading ? <p className='text-center text-gray-500 dark:text-gray-400 py-4'>Öğrenci listesi yükleniyor...</p> : (
                 <div className="space-y-3">
                     {students.map(student => (
                         <Link key={student.id} href={`/teacher/students/${student.id}`} className="block bg-white p-4 rounded-lg shadow hover:shadow-md transition-shadow">

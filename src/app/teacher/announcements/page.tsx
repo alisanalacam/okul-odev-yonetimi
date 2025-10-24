@@ -28,11 +28,11 @@ const AnnouncementCard = ({ announcement, onDelete }: { announcement: any, onDel
           <Icon className="h-6 w-6" />
         </div>
         <div className="flex-1">
-          <p className="font-bold text-gray-900">{announcement.title}</p>
-          <p className="text-sm text-gray-600 mt-1 line-clamp-2">{announcement.content || 'İçerik yok'}</p>
+          <p className="font-bold text-gray-900 dark:text-gray-700">{announcement.title}</p>
+          <p className="text-sm text-gray-600 dark:text-gray-600 mt-1 line-clamp-2">{announcement.content || 'İçerik yok'}</p>
           <div className="flex flex-wrap gap-2 mt-3">
             {announcement.announcementClasses.map((ac: any) => (
-              <span key={ac.class.id} className="text-xs bg-gray-200 px-2 py-1 rounded-full">{ac.class.grade}-{ac.class.section}</span>
+              <span key={ac.class.id} className="text-xs bg-gray-200 px-2 py-1 rounded-full dark:text-gray-600">{ac.class.grade}-{ac.class.section}</span>
             ))}
           </div>
           <p className="text-xs text-gray-400 text-right mt-2">{new Date(announcement.createdAt).toLocaleDateString('tr-TR')}</p>
@@ -96,7 +96,7 @@ export default function AnnouncementsPage() {
                 </Link>
             </div>
 
-            {loading ? <p>Yükleniyor...</p> : (
+            {loading ? <p className="text-center text-gray-500 dark:text-gray-400 py-4">Yükleniyor...</p> : (
                 <div className="space-y-3">
                     {announcements.map(announcement => (
                         <AnnouncementCard key={announcement.id} announcement={announcement} onDelete={handleDelete} />

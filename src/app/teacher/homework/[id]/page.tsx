@@ -113,8 +113,8 @@ export default function HomeworkDetailPage() {
 
   }, [homework, filter, isPastDue]);
 
-  if (loading) return <div className="text-center py-10">Ödev detayları yükleniyor...</div>;
-  if (!homework) return <div className="text-center py-10">Ödev bulunamadı.</div>;
+  if (loading) return <div className="text-center py-10 dark:text-gray-900">Ödev detayları yükleniyor...</div>;
+  if (!homework) return <div className="text-center py-10 dark:text-gray-900">Ödev bulunamadı.</div>;
 
   const counts = {
     completed: homework.students.filter((s: any) => s.status === 'completed').length,
@@ -211,7 +211,7 @@ export default function HomeworkDetailPage() {
               <li key={student.id} className="flex items-center justify-between p-4">
                 <Link 
                 href={student.submissionId ? `/teacher/submission/${student.submissionId}?parentId=${student.parentUserId}` : '#'} 
-                className={`font-medium text-gray-800 ${student.submissionId ? 'hover:underline' : 'cursor-default opacity-60'}`}
+                className={`font-medium text-gray-800 dark:text-gray-700 ${student.submissionId ? 'hover:underline' : 'cursor-default opacity-60'}`}
                 onClick={(e) => !student.submissionId && e.preventDefault()}
               >
                 {student.name}

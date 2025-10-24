@@ -24,7 +24,7 @@ export default function SelectStudentPage() {
     router.push('/parent');
   };
 
-  if (!profile) return <div>Yükleniyor...</div>;
+  if (!profile) return <div className="flex items-center justify-center h-screen dark:text-gray-900">Yükleniyor...</div>;
 
   return (
     <div className="p-4 bg-gray-50 min-h-screen">
@@ -38,7 +38,7 @@ export default function SelectStudentPage() {
           >
             <UserCircleIcon className="h-10 w-10 text-indigo-500" />
             <div>
-              <p>{student.name}</p>
+              <p className="dark:text-gray-900">{student.name}</p>
               <p className="text-sm font-normal text-gray-500">{student.class.grade}-{student.class.section} Sınıfı</p>
             </div>
           </button>

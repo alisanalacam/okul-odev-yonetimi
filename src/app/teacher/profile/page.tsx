@@ -14,7 +14,7 @@ export default function TeacherProfilePage() {
         if(token) api.get('/api/teacher/profile', token).then(setProfile);
     }, [token]);
 
-    if (!profile) return <div>Profil bilgileri yükleniyor...</div>;
+    if (!profile) return <div className="text-center py-10 dark:text-gray-900">Profil bilgileri yükleniyor...</div>;
 
     return (
         <div className="space-y-6">
@@ -23,19 +23,19 @@ export default function TeacherProfilePage() {
             <div className="bg-white p-4 rounded-lg shadow space-y-3">
                 <div className="flex justify-between border-b pb-2">
                     <span className="text-gray-600">Ad Soyad</span>
-                    <span className="font-semibold">{profile.name}</span>
+                    <span className="font-semibold dark:text-gray-700">{profile.name}</span>
                 </div>
                  <div className="flex justify-between border-b pb-2">
                     <span className="text-gray-600">E-posta</span>
-                    <span className="font-semibold">{profile.email}</span>
+                    <span className="font-semibold dark:text-gray-700">{profile.email}</span>
                 </div>
                  <div className="flex justify-between border-b pb-2">
                     <span className="text-gray-600">Telefon</span>
-                    <span className="font-semibold">{profile.phone}</span>
+                    <span className="font-semibold dark:text-gray-700">{profile.phone}</span>
                 </div>
                  <div className="flex justify-between">
                     <span className="text-gray-600">Branş</span>
-                    <span className="font-semibold">{profile.branch}</span>
+                    <span className="font-semibold dark:text-gray-700">{profile.branch}</span>
                 </div>
             </div>
 

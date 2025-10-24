@@ -3,7 +3,20 @@ const api = {
       const response = await fetch(url, {
         headers: { 'Authorization': `Bearer ${token}` },
       });
-      if (!response.ok) throw new Error('Veri alınamadı.');
+      if (!response.ok) {
+        if (response.status === 401) {
+          localStorage.removeItem('authToken');
+          localStorage.removeItem('authUser');
+          localStorage.removeItem('selectedStudent');
+          localStorage.removeItem('selectedStudentInfo');
+          localStorage.removeItem('selectedClassId');
+          localStorage.removeItem('selectedClass');
+          localStorage.removeItem('selectedClass');
+          alert('Oturumunuzun süresi doldu. Lütfen tekrar giriş yapınız.');
+          window.location.href = '/login';
+        }
+      }
+        
       return response.json();
     },
     

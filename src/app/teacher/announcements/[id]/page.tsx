@@ -58,7 +58,7 @@ export default function AnnouncementDetailPage() {
         if(token && id) api.get(`/api/teacher/announcements/${id}`, token).then(setAnnouncement);
     }, [token, id]);
 
-    if (!announcement) return <div className="text-center py-10">Duyuru yükleniyor...</div>;
+    if (!announcement) return <div className="text-center py-10 dark:text-gray-900">Duyuru yükleniyor...</div>;
 
     return (
         <div className="space-y-6">

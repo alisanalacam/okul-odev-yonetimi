@@ -16,12 +16,12 @@ export default function ParentMessagesListPage() {
 
     return (
         <div>
-            <h2 className="text-2xl font-bold mb-4">Mesajlar</h2>
+            <h2 className="text-2xl font-bold mb-4 dark:text-gray-900">Mesajlar</h2>
             <div className="space-y-3">
-                {loading ? <p>Yükleniyor...</p> : conversations.length > 0 ? conversations.map(conv => (
+                {loading ? <p className="text-center text-gray-500 dark:text-gray-400 py-4">Yükleniyor...</p> : conversations.length > 0 ? conversations.map(conv => (
                     <Link key={conv.teacher.id} href={`/parent/messages/${conv.teacher.id}`} className="block bg-white p-4 rounded-lg shadow hover:bg-gray-50">
-                        <p className="font-bold">{conv.teacher.name}</p>
-                        <p className="text-sm text-gray-600 truncate">{conv.lastMessage}</p>
+                        <p className="font-bold dark:text-gray-700">{conv.teacher.name}</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400 truncate">{conv.lastMessage}</p>
                     </Link>
                 )) : <p>Henüz bir görüşmeniz yok.</p>}
             </div>

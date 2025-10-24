@@ -17,8 +17,8 @@ export default function MessagesListPage() {
             <div className="space-y-3">
                 {conversations.map(conv => (
                     <Link key={conv.parent.id} href={`/teacher/messages/${conv.parent.id}`} className="block bg-white p-4 rounded-lg shadow hover:bg-gray-50">
-                        <p className="font-bold">{conv.parent.name}</p>
-                        <p className="text-sm text-gray-600 truncate">{conv.lastMessage}</p>
+                        <p className="font-bold dark:text-gray-700">{conv.parent.name}</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400 truncate">{conv.lastMessage}</p>
                     </Link>
                 ))}
             </div>

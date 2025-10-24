@@ -78,15 +78,15 @@ export default function RegisterPage() {
               <legend className="px-2 font-semibold text-lg text-gray-700">Veli Bilgileri</legend>
               <div>
                 <label htmlFor="parentName" className="block text-sm font-medium text-gray-700">Ad Soyad</label>
-                <input id="parentName" type="text" value={parentName} onChange={(e) => setParentName(e.target.value)} required className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"/>
+                <input id="parentName" type="text" value={parentName} onChange={(e) => setParentName(e.target.value)} required className="mt-1 block w-full px-4 py-2 dark:text-gray-100 dark:bg-gray-800 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"/>
               </div>
               <div>
                 <label htmlFor="parentEmail" className="block text-sm font-medium text-gray-700">E-posta</label>
-                <input id="parentEmail" type="email" value={parentEmail} onChange={(e) => setParentEmail(e.target.value)} required className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"/>
+                <input id="parentEmail" type="email" value={parentEmail} onChange={(e) => setParentEmail(e.target.value)} required className="mt-1 block w-full px-4 py-2 dark:text-gray-100 dark:bg-gray-800 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"/>
               </div>
               <div>
                 <label htmlFor="parentPhone" className="block text-sm font-medium text-gray-700">Telefon Numarası</label>
-                <input id="parentPhone" type="tel" value={parentPhone} onChange={(e) => setParentPhone(e.target.value)} required className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"/>
+                <input id="parentPhone" type="tel" value={parentPhone} onChange={(e) => setParentPhone(e.target.value)} required className="mt-1 block w-full px-4 py-2 dark:text-gray-100 dark:bg-gray-800 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"/>
               </div>
             </fieldset>
 
@@ -95,19 +95,19 @@ export default function RegisterPage() {
               <legend className="px-2 font-semibold text-lg text-gray-700">Öğrenci Bilgileri</legend>
               <div>
                 <label htmlFor="studentName" className="block text-sm font-medium text-gray-700">Öğrencinin Adı Soyadı</label>
-                <input id="studentName" type="text" value={studentName} onChange={(e) => setStudentName(e.target.value)} required className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"/>
+                <input id="studentName" type="text" value={studentName} onChange={(e) => setStudentName(e.target.value)} required className="mt-1 block w-full px-4 py-2 dark:text-gray-100 dark:bg-gray-800 dark:border-gray-700 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"/>
               </div>
               <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label htmlFor="studentGrade" className="block text-sm font-medium text-gray-700">Sınıfı</label>
-                    <select id="studentGrade" value={studentGrade} onChange={e => setStudentGrade(e.target.value)} required className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    <select id="studentGrade" value={studentGrade} onChange={e => setStudentGrade(e.target.value)} required className="mt-1 block w-full px-4 py-2 dark:text-gray-100 dark:bg-gray-800 dark:border-gray-700 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
                         <option value="" disabled>Seçin...</option>
                         {grades.map(grade => <option key={grade} value={grade}>{grade}. Sınıf</option>)}
                     </select>
                   </div>
                   <div>
                     <label htmlFor="studentSection" className="block text-sm font-medium text-gray-700">Şubesi</label>
-                    <select id="studentSection" value={studentSection} onChange={e => setStudentSection(e.target.value)} required className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    <select id="studentSection" value={studentSection} onChange={e => setStudentSection(e.target.value)} required className="mt-1 block w-full px-4 py-2 dark:text-gray-100 dark:bg-gray-800 dark:border-gray-700 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
                         <option value="" disabled>Seçin...</option>
                         {sections.map(section => <option key={section} value={section}>{section} Şubesi</option>)}
                     </select>

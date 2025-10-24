@@ -49,8 +49,8 @@ export default function StudentDetailPage() {
         }
     }, [token, id]);
 
-    if (loading) return <div className="text-center py-10">Öğrenci verileri yükleniyor...</div>;
-    if (!data) return <div className="text-center py-10">Öğrenci bulunamadı.</div>;
+    if (loading) return <div className="text-center py-10 dark:text-gray-900">Öğrenci verileri yükleniyor...</div>;
+    if (!data) return <div className="text-center py-10 dark:text-gray-900">Öğrenci bulunamadı.</div>;
 
     const { student, stats, completedHomeworks, notCompletedHomeworks } = data;
 
@@ -69,22 +69,25 @@ export default function StudentDetailPage() {
 
             {/* İstatistikler */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <StatCard title="Okunan Kitap" value={stats.booksRead} icon={BookOpenIcon} colorClass={{ bg: 'bg-blue-100', text: 'text-blue-600' }} />
+                <Link href={`/teacher/students/${student.id}/book-logs`}>
+                    <StatCard title="Okunan Kitap" value={stats.booksRead} icon={BookOpenIcon} colorClass={{ bg: 'bg-blue-100 dark:bg-blue-900/50', text: 'text-blue-600 dark:text-blue-300' }} />
+                </Link>
                 <StatCard title="Tamamlanan Ödev" value={stats.completed} icon={CheckBadgeIcon} colorClass={{ bg: 'bg-green-100', text: 'text-green-600' }} />
                 <StatCard title="Yapılmayan Ödev" value={stats.notCompleted} icon={XCircleIcon} colorClass={{ bg: 'bg-red-100', text: 'text-red-600' }} />
             </div>
             
             {/* Veliye Mesaj Butonu */}
-            <Link href={`/teacher/messages/${student.parent.id}?studentId=${student.id}`} className="btn-primary w-full flex items-center justify-center gap-2">
+            <Link href={`/teacher/messages/${student.parent.id}?studentId=${student.id}`} className="bg-blue-500 text-white px-4 py-3 rounded-full text-sm font-medium w-full flex items-center justify-center gap-2">
                 <ChatBubbleOvalLeftEllipsisIcon className="h-5 w-5"/>
-                <span>{student.parent.name} (Veli) ile Mesajlaş</span>
+                <span className='dark:text-white'>{student.parent.name} (Veli) ile Mesajlaş</span>
             </Link>
 
             {/* Ödev Listeleri */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Son Tamamlanan Ödevler */}
                 <div className="bg-white p-4 rounded-lg shadow">
-                    <h3 className="font-semibold text-gray-800 mb-2">Son Tamamlanan 5 Ödev</h3>
+                    <h3 className="font-semibold text-gray-800 dark:text-gray-700 mb-2">Son Tamamlanan 5 Ödev</h3>
+                    <hr className="border-gray-200 dark:border-gray-700"/>
                     <div className="divide-y divide-gray-100">
                         {completedHomeworks.length > 0 ? (
                             completedHomeworks.map((sub: any) => <HomeworkListItem key={sub.id} submission={sub} />)
@@ -97,6 +100,7 @@ export default function StudentDetailPage() {
                 {/* Son Yapılmayan Ödevler */}
                 <div className="bg-white p-4 rounded-lg shadow">
                     <h3 className="font-semibold text-gray-800 mb-2">Son Yapılmayan 5 Ödev</h3>
+                    <hr className="border-gray-200 dark:border-gray-700"/>
                     <div className="divide-y divide-gray-100">
                         {notCompletedHomeworks.length > 0 ? (
                             notCompletedHomeworks.map((sub: any) => <HomeworkListItem key={sub.id} submission={sub} />)

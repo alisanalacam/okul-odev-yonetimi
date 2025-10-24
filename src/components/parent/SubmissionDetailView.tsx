@@ -2,7 +2,7 @@
 import { useState, useEffect, FormEvent, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { ArrowLeftIcon, CheckCircleIcon, XCircleIcon, CameraIcon, XMarkIcon, DocumentIcon } from '@heroicons/react/24/solid';
+import { ArrowLeftIcon, CheckCircleIcon, XCircleIcon, CameraIcon, XMarkIcon, DocumentIcon, ExclamationCircleIcon } from '@heroicons/react/24/solid';
 import CommentsSection from '@/components/shared/CommentsSection';
 import { compressImage } from '@/lib/image-compressor';
 
@@ -126,7 +126,7 @@ export default function SubmissionDetailView({ initialData, refreshData }: Submi
       return new Date(initialData.homework.dueDate) < oneWeekAgo;
   }, [initialData?.homework?.dueDate]);
 
-    if (!initialData) return <div className="text-center py-10">Yükleniyor...</div>;
+    if (!initialData) return <div className="text-center py-10 dark:text-gray-900">Yükleniyor...</div>;
 
     const { homework, submission } = initialData;
 
@@ -156,6 +156,16 @@ export default function SubmissionDetailView({ initialData, refreshData }: Submi
               {/* Notes kısmı: 1 kolon genişliğinde */}
               <div className="col-span-1">
                 <p className="text-sm text-gray-500">{renderNotes(homework.notes || '')}</p>
+              </div>
+              <div className="col-span-1">
+
+                <p>
+                  {homework.isExtra ? (
+                    <span className="text-sm text-gray-500 dark:text-yellow-700 bg-yellow-100 p-2 rounded-md flex items-center gap-2"><ExclamationCircleIcon className="h-5 w-5" /> Bu bir ekstra ödevdir. Puanlı değildir.</span>
+                  ) : (
+                    <p></p>
+                  )}
+                  </p>
               </div>
             </div>
 
@@ -213,10 +223,10 @@ export default function SubmissionDetailView({ initialData, refreshData }: Submi
                 
                 <div>
                     <label htmlFor="notes" className="block text-sm font-medium text-gray-700">Not Ekle <span className="text-gray-400">(İsteğe Bağlı)</span></label>
-                    <textarea disabled={isLocked} id="notes" value={notes} onChange={e => setNotes(e.target.value)} rows={3} placeholder="Öğretmeninize iletmek istediğiniz bir not var mı?" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"/>
+                    <textarea disabled={isLocked} id="notes" value={notes} onChange={e => setNotes(e.target.value)} rows={3} placeholder="Öğretmeninize iletmek istediğiniz bir not var mı?" className="mt-1 block dark:text-gray-800 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"/>
                 </div>
 
-                <div>
+                {/**<div>
                     <label className="block text-sm font-medium text-gray-700">Fotoğraf Ekle <span className="text-gray-400">(İsteğe Bağlı)</span></label>
                     <label htmlFor="photo-upload" className="mt-2 flex justify-center items-center gap-2 w-full px-6 py-4 border-2 border-gray-300 border-dashed rounded-md cursor-pointer hover:border-indigo-500 hover:bg-indigo-50 transition-colors">
                         <CameraIcon className="h-6 w-6 text-gray-400"/>
@@ -236,7 +246,7 @@ export default function SubmissionDetailView({ initialData, refreshData }: Submi
                         ))}
                       </div>
                     )}
-                </div>
+                </div>*/}
 
                 <button onClick={handleSubmit} disabled={isSubmitting || !status || isLocked} className="w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-lg shadow hover:bg-indigo-700 transition-colors disabled:bg-indigo-300 disabled:cursor-not-allowed">
                     {isSubmitting ? 'Kaydediliyor...' : 'Ödevi Gönder'}

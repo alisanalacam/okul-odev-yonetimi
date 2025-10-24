@@ -15,7 +15,7 @@ const ParentHeader = ({ onStudentChange }: { onStudentChange: () => void }) => {
         <header className="bg-white shadow p-4 flex justify-between items-center sticky top-0 z-10">
             {selectedStudent ? (
                 <div className="flex-1 min-w-0">
-                    <p className="font-bold text-lg truncate">{selectedStudent.name}</p>
+                    <p className="font-bold text-lg truncate dark:text-gray-900">{selectedStudent.name}</p>
                     <p className="text-sm text-gray-500">{selectedStudent.class}</p>
                 </div>
             ) : <div className="flex-1"/>}
@@ -46,7 +46,7 @@ export default function ParentLayout({ children }: { children: ReactNode }) {
   // EN ÖNEMLİ DEĞİŞİKLİK: Context yüklenene kadar hiçbir şey gösterme.
   // Bu, sayfa yenilendiğinde header'ın boş görünmesini ve hatalı yönlendirmeleri engeller.
   if (isLoading) {
-    return <div className="flex items-center justify-center h-screen bg-gray-50">Yükleniyor...</div>;
+    return <div className="flex items-center justify-center h-screen bg-gray-50 dark:bg-gray-900">Yükleniyor...</div>;
   }
 
   return (

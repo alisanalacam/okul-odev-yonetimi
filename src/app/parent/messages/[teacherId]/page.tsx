@@ -46,7 +46,7 @@ export default function ParentConversationPage() {
                 <div ref={messagesEndRef} />
             </div>
             <form onSubmit={handleSend} className="mt-4 flex gap-2">
-                <input type="text" value={content} onChange={e => setContent(e.target.value)} placeholder="Mesajınızı yazın..." className="w-full border-white-300 bg-white rounded-lg shadow-sm p-3 pl-10 text-base focus:ring-indigo-500 focus:border-indigo-500"/>
+                <input type="text" value={content} onChange={e => setContent(e.target.value)} placeholder="Mesajınızı yazın..." className="w-full border-white-300 bg-white rounded-lg shadow-sm p-3 pl-10 text-base dark:text-gray-800 focus:ring-indigo-500 focus:border-indigo-500"/>
                 <button type="submit" className="p-3 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700"><PaperAirplaneIcon className="h-6 w-6"/></button>
             </form>
         </div>

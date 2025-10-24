@@ -13,7 +13,6 @@ export default function SubmissionWrapperPage() {
 
     const fetchData = useCallback(() => {
         if (token && submissionId) {
-            console.log("Fetching data for submission:", submissionId);
             api.get(`/api/parent/submissions/${submissionId}`, token).then(setData);
         }
     }, [token, submissionId]);

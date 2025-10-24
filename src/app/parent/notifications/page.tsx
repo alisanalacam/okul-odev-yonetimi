@@ -87,21 +87,21 @@ export default function NotificationsPage() {
             <div className="flex items-center justify-between gap-3 mb-4">
                 <div className="flex items-center gap-3">
                     <button onClick={() => router.back()} className="p-2 rounded-full hover:bg-gray-200"><ArrowLeftIcon className="h-6 w-6 text-gray-700"/></button>
-                    <h2 className="text-2xl font-bold">Bildirimler</h2>
+                    <h2 className="text-2xl font-bold dark:text-gray-900">Bildirimler</h2>
                 </div>
                 <button onClick={handleMarkAllAsRead} className="text-sm font-medium text-blue-600 hover:underline">
                     Tümünü Okundu Yap
                 </button>
             </div>
             <div className="space-y-3">
-                {isLoading ? <p>Yükleniyor...</p> : notifications.length > 0 ? notifications.map(n => (
+                {isLoading ? <p className="text-center text-gray-500 dark:text-gray-400 py-4">Yükleniyor...</p> : notifications.length > 0 ? notifications.map(n => (
                     <Link key={n.id} href={getNotificationLink(n)} 
                     onClick={() => handleNotificationClick(n)}
                     className={`block p-4 rounded-lg shadow ${!n.isRead ? 'bg-blue-50' : 'bg-white'}`}>
-                        <p className="font-semibold">{getNotificationMessage(n)}</p>
-                        <p className="text-xs text-gray-500 mt-1">{new Date(n.createdAt).toLocaleString('tr-TR')}</p>
+                        <p className="font-semibold dark:text-gray-700">{getNotificationMessage(n)}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{new Date(n.createdAt).toLocaleString('tr-TR')}</p>
                     </Link>
-                )) : <p className="text-center text-gray-500 py-4">Yeni bir bildiriminiz yok.</p>}
+                )) : <p className="text-center text-gray-500 dark:text-gray-400 py-4">Yeni bir bildiriminiz yok.</p>}
                 {nextCursor && (
                     <button onClick={handleLoadMore} disabled={isLoadingMore} className="btn-secondary w-full">
                         {isLoadingMore ? 'Yükleniyor...' : 'Daha Fazla Yükle'}

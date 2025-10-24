@@ -55,7 +55,7 @@ function TeacherDashboard() {
           Tarih Seç
         </label>
 
-        <div className="absolute inset-y-0 left-0 mt-[22px] pl-3 flex items-center pointer-events-none">
+        <div className="absolute inset-y-0 left-0 mt-[22px] pl-3 flex items-center pointer-events-none dark:text-gray-700 dark:bg-white">
           <CalendarDaysIcon className="h-5 w-5 text-gray-400" />
         </div>
 
@@ -79,7 +79,7 @@ function TeacherDashboard() {
         <h2 className="text-xl font-bold text-gray-800 mb-3">{formatDateHeader(selectedDate)}</h2>
         <div className="space-y-3">
           {loading ? (
-             <p className="text-center text-gray-500 py-4">Ödevler yükleniyor...</p>
+             <p className="text-center text-gray-500 py-4 dark:text-gray-400">Ödevler yükleniyor...</p>
           ) : homeworks.length > 0 ? (
             homeworks.map(hw => (
               // Ödev Kartı
@@ -139,8 +139,8 @@ export default function TeacherRootPage() {
     });
   }, [token, router]);
 
-  if (status === 'loading') return <div>Yükleniyor...</div>;
-  if (status === 'no-class') return <div>Size atanmış bir sınıf bulunmuyor.</div>;
+  if (status === 'loading') return <div className="text-center py-10 dark:text-gray-900">Yükleniyor...</div>;
+  if (status === 'no-class') return <div className="text-center py-10 dark:text-gray-900">Size atanmış bir sınıf bulunmuyor.</div>;
   
   return <TeacherDashboard />;
 }

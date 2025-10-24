@@ -60,7 +60,7 @@ export default function ParentAnnouncementsPage() {
     return (
         <div className="space-y-5">
             <h2 className="text-2xl font-bold text-gray-800">Duyurular</h2>
-            {loading ? <p>Yükleniyor...</p> : (
+            {loading ? <p className="text-center text-gray-500 dark:text-gray-400 py-4">Yükleniyor...</p> : (
                 announcements.length > 0 ? (
                     <div className="space-y-3">
                         {announcements.map(announcement => (

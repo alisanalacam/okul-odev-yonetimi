@@ -43,7 +43,7 @@ export default function ConversationPage() {
         <div className="flex flex-col h-full">
             <div className="flex items-center gap-3 mb-4">
                 <button onClick={() => router.push('/teacher/messages')} className="p-2 rounded-full hover:bg-gray-200"><ArrowLeftIcon className="h-6 w-6 text-gray-700"/></button>
-                <h2 className="text-xl font-bold">Sohbet</h2>
+                <h2 className="text-xl font-bold dark:text-gray-900">Sohbet</h2>
             </div>
             <div className="flex-1 overflow-y-auto space-y-4 p-4 bg-gray-100 rounded-lg">
                 {messages.map(msg => (
@@ -58,7 +58,7 @@ export default function ConversationPage() {
                 <div ref={messagesEndRef} />
             </div>
             <form onSubmit={handleSend} className="mt-4 flex gap-2">
-                <input type="text" value={content} onChange={e => setContent(e.target.value)} placeholder="Mesajınızı yazın..." className="w-full border-white-300 bg-white rounded-lg shadow-sm p-3 pl-10 text-base focus:ring-indigo-500 focus:border-indigo-500"/>
+                <input type="text" value={content} onChange={e => setContent(e.target.value)} placeholder="Mesajınızı yazın..." className="w-full border-white-300 bg-white rounded-lg dark:text-gray-800 shadow-sm p-3 pl-10 text-base focus:ring-indigo-500 focus:border-indigo-500"/>
                 <button type="submit" className="p-3 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700"><PaperAirplaneIcon className="h-6 w-6"/></button>
             </form>
         </div>

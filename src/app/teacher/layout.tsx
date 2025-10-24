@@ -53,13 +53,13 @@ const TeacherHeader = () => {
   return (
     <header className="bg-white shadow p-4 flex justify-between items-center sticky top-0 z-10 "> {/* Sabit yükseklik */}
       <div className="flex-1 min-w-0">
-        <p className="font-bold text-lg truncate">{profile.name}</p>
+        <p className="font-bold text-lg truncate dark:text-gray-900">{profile.name}</p>
         <p className="text-sm text-gray-600">{profile.branch || 'Branş Yok'}</p>
       </div>
       <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
         {selectedClassInfo && (
            <div className="text-right">
-               <span className="text-sm font-semibold">Sınıf</span>
+               <span className="text-sm font-semibold dark:text-gray-700">Sınıf</span>
                <div className="flex items-center gap-1">
                    <span className="text-gray-800">{selectedClassInfo.grade}-{selectedClassInfo.section}</span>
                    {profile.classes.length > 1 && (

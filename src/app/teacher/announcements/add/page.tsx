@@ -136,8 +136,8 @@ export default function AddAnnouncementPage() {
                 <label className="block text-sm font-medium text-gray-700">Duyuru Türü</label>
                 <div className="mt-2 grid grid-cols-3 gap-3">
                     {['note', 'link', 'photo'].map(t => (
-                        <button type="button" key={t} onClick={() => setType(t)} className={`px-4 py-2 text-sm rounded-lg border ${type === t ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white hover:bg-gray-50'}`}>
-                            {t === 'note' ? 'Not' : t === 'link' ? 'Link' : 'Fotoğraf/Dosya'}
+                        <button type="button" key={t} onClick={() => setType(t)} className={`px-4 py-2 text-sm rounded-lg dark:text-white border ${type === t ? 'bg-indigo-600 text-white dark:text-gray-900 border-indigo-600' : 'bg-white dark:bg-gray-800 dark:text-gray-700 hover:bg-gray-50'}`}>
+                            {t === 'note' ? 'Not' : t === 'link' ? 'Link' : 'Foto/Dosya'}
                         </button>
                     ))}
                 </div>
@@ -146,24 +146,24 @@ export default function AddAnnouncementPage() {
             <div className="bg-white p-4 rounded-lg shadow space-y-4">
                 <div>
                     <label htmlFor="title" className="block text-sm font-medium text-gray-700">Başlık*</label>
-                    <input id="title" type="text" value={title} onChange={e => setTitle(e.target.value)} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"/>
+                    <input id="title" type="text" value={title} onChange={e => setTitle(e.target.value)} required className="mt-1 block w-full dark:text-gray-800 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"/>
                 </div>
 
                 {type === 'note' && (
                     <div>
                         <label htmlFor="content" className="block text-sm font-medium text-gray-700">Açıklama*</label>
-                        <textarea id="content" value={content} onChange={e => setContent(e.target.value)} required rows={4} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"/>
+                        <textarea id="content" value={content} onChange={e => setContent(e.target.value)} required rows={4} className="mt-1 block w-full dark:text-gray-800 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"/>
                     </div>
                 )}
                 {type === 'link' && (
                     <>
                         <div>
                            <label htmlFor="content" className="block text-sm font-medium text-gray-700">Açıklama</label>
-                           <textarea id="content" value={content} onChange={e => setContent(e.target.value)} rows={3} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"/>
+                           <textarea id="content" value={content} onChange={e => setContent(e.target.value)} rows={3} className="mt-1 block w-full px-3 py-2 dark:text-gray-800 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"/>
                         </div>
                         <div>
                            <label htmlFor="linkUrl" className="block text-sm font-medium text-gray-700">Link URL*</label>
-                           <input id="linkUrl" type="url" value={linkUrl} onChange={e => setLinkUrl(e.target.value)} required placeholder="https://..." className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"/>
+                           <input id="linkUrl" type="url" value={linkUrl} onChange={e => setLinkUrl(e.target.value)} required placeholder="https://..." className="mt-1 block w-full dark:text-gray-800 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"/>
                         </div>
                     </>
                 )}
@@ -171,7 +171,7 @@ export default function AddAnnouncementPage() {
                     <>
                         <div>
                            <label htmlFor="content" className="block text-sm font-medium text-gray-700">Açıklama</label>
-                           <textarea id="content" value={content} onChange={e => setContent(e.target.value)} rows={3} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"/>
+                           <textarea id="content" value={content} onChange={e => setContent(e.target.value)} rows={3} className="mt-1 block w-full px-3 py-2 dark:text-gray-800 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"/>
                         </div>
                         <div>
                         <label className="block text-sm font-medium text-gray-700">Dosyalar* (Resim veya PDF)</label>

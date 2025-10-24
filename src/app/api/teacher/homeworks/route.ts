@@ -80,6 +80,7 @@ export async function POST(request: NextRequest) {
                 dueDate: new Date(date),
                 bookId: parseInt(hw.bookId),
                 notes: hw.notes,
+                isExtra: hw.isExtra,
             },
         });
 

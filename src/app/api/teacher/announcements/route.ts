@@ -10,8 +10,6 @@ export async function GET(request: NextRequest) {
     const teacherPayload = await verifyTeacher(request);
     if (teacherPayload instanceof NextResponse) return teacherPayload;
     
-    console.log('teacherPayload');
-    console.log(teacherPayload);
     const { searchParams } = new URL(request.url);
     const cursor = searchParams.get('cursor');
 

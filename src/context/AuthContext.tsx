@@ -35,7 +35,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
 
   useEffect(() => {
-    console.log('buraya giriyor')
     // Sayfa yeniden yüklendiğinde localStorage'dan token'ı al
     const storedToken = localStorage.getItem('authToken');
     const storedUser = localStorage.getItem('authUser');

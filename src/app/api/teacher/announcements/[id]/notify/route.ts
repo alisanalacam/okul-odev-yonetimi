@@ -1,7 +1,7 @@
 import { NextResponse, NextRequest } from 'next/server';
 import { prisma } from '@/lib/db';
 import { verifyTeacher } from '@/lib/auth-utils';
-import { sendNotification } from '@/lib/onesignal-sender';
+//import { sendNotification } from '@/lib/onesignal-sender';
 
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const teacherPayload = await verifyTeacher(request);
@@ -60,12 +60,12 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     }
 
     // 4. OneSignal ile bildirim gönder
-    await sendNotification({
+    /*await sendNotification({
       playerIds: playerIds,
       title: "Öğretmeninizden Yeni Bir Duyuru Var!",
       message: `"${announcement.title}" başlıklı yeni bir duyuru yayınlandı.`,
       url: `https://okul-odev.vobion.com/parent/announcements/${announcement.id}` // Veli panelindeki duyuru detay linki
-    });
+    });*/
 
     return NextResponse.json({ success: true, message: `${playerIds.length} veliye bildirim başarıyla gönderildi.` });
 

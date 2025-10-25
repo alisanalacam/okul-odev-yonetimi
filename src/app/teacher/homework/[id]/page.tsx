@@ -90,7 +90,9 @@ export default function HomeworkDetailPage() {
   const isPastDue = useMemo(() => {
     if (!homework) return false;
     // Saat farklarını hesaba katmadan sadece güne göre karşılaştırma
-    const dueDate = new Date(homework.dueDate);
+    
+    const dueDate = new Date();
+    dueDate.setDate(dueDate.getDate() + 7);
     dueDate.setHours(23, 59, 59, 999); // Ödev gününün sonuna ayarla
     return new Date() > dueDate;
   }, [homework]);
@@ -165,7 +167,7 @@ export default function HomeworkDetailPage() {
             {homework.isExtra ? (
               <span className="text-sm text-gray-500 dark:text-yellow-700 bg-yellow-100 p-2 rounded-md flex items-center gap-2"><ExclamationCircleIcon className="h-5 w-5" /> Bu bir ekstra ödevdir. Puanlı değildir.</span>
             ) : (
-              <p></p>
+              ''
             )}
           </p>
         </div>

@@ -1,7 +1,7 @@
 "use client";
 import { useAuth } from "@/context/AuthContext";
 import api from "@/lib/api";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from 'next/link';
 import { PlusIcon, CalendarDaysIcon, ChevronRightIcon, ClipboardDocumentListIcon } from '@heroicons/react/24/solid';
@@ -9,8 +9,17 @@ import { PlusIcon, CalendarDaysIcon, ChevronRightIcon, ClipboardDocumentListIcon
 // Ana panel içeriği ayrı bir component'te olacak
 function TeacherDashboard() {
   const { token } = useAuth();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  
   //const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  // URL'den gelen tarihi oku
+  const dateFromUrl = searchParams.get('date');
+  const initialDate = dateFromUrl || new Date().toISOString().split('T')[0];
+
+  // State'i URL'den gelen veya bugünün tarihiyle başlat
+  const [selectedDate, setSelectedDate] = useState<string>(initialDate);
+
   const [homeworks, setHomeworks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -23,25 +32,66 @@ function TeacherDashboard() {
     return date.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
   };
 
-  useEffect(() => {
-    // Component yüklendiğinde bugünün tarihini ayarla
-    setSelectedDate(new Date().toISOString().split('T')[0]);
-  }, []); // Boş dependency array, sadece bir kere çalışmasını sağlar
-  
-  useEffect(() => {
-    const classId = localStorage.getItem('selectedClassId');
-    if (!token || !classId || !selectedDate) return;
+  const handleDateChange = (newDate: string) => {
+    // Doğrudan setSelectedDate çağırmıyoruz!
+    router.replace(`/teacher?date=${newDate}`, { scroll: false });
+  };
 
+  useEffect(() => {
+    const dateParam = searchParams.get('date');
+    const targetDate = dateParam || new Date().toISOString().split('T')[0];
+
+    // Sadece URL'deki tarih mevcut state'ten farklıysa güncelle
+    if (targetDate !== selectedDate) {
+        console.log(`URL changed. Updating state: ${targetDate}`);
+        setSelectedDate(targetDate);
+    }
+    // Eğer URL'de tarih yoksa, URL'yi bugüne ayarla (ilk yükleme için)
+    // Ama bunu sadece selectedDate state'i henüz ayarlanmadıysa yapalım
+    else if (!dateParam && selectedDate !== targetDate) {
+        console.log(`Initial load without date param. Setting URL and state to today: ${targetDate}`);
+        // Hem state'i hem URL'yi ayarla
+        setSelectedDate(targetDate);
+        router.replace(`/teacher?date=${targetDate}`, { scroll: false });
+    }
+  }, [searchParams, router, selectedDate]); // selectedDate bağımlılığını geri ekleyelim ama kontrolü içeride yapalım
+
+  useEffect(() => {
+
+    if (!token || !selectedDate) {
+      console.log("Skipping fetch: No token or selectedDate.");
+      setHomeworks([]);
+      return;
+    }
+
+    const classId = localStorage.getItem('selectedClassId');
+    if (!classId) {
+        console.log("Skipping fetch: No class selected.");
+        setHomeworks([]);
+        return;
+    }
+
+    console.log(`Fetching homeworks for date: ${selectedDate}`);
     setLoading(true);
     api.get(`/api/teacher/homeworks?classId=${classId}&date=${selectedDate}`, token)
-      .then(setHomeworks)
-      .catch(err => console.error("Ödevler yüklenemedi:", err))
-      .finally(() => setLoading(false));
+      .then(fetchedHomeworks => {
+        console.log("Homeworks fetched:", fetchedHomeworks);
+        setHomeworks(fetchedHomeworks);
+      })
+      .catch(err => {
+        console.error("Ödevler yüklenemedi:", err);
+        setHomeworks([]);
+      })
+      .finally(() => {
+        console.log("Fetch finished.");
+        setLoading(false);
+      });
 
+  // Bu effect SADECE token veya selectedDate değiştiğinde çalışmalı.
   }, [token, selectedDate]);
 
-  if (!selectedDate) {
-    return <div>Yükleniyor...</div>;
+  if (selectedDate === null) {
+    return <div className="text-center py-10 dark:text-gray-900">Tarih ayarlanıyor...</div>;
   }
 
   return (
@@ -63,7 +113,7 @@ function TeacherDashboard() {
           id="homeworkDate"
           type="date"
           value={selectedDate}
-          onChange={(e) => setSelectedDate(e.target.value)}
+          onChange={(e) => handleDateChange(e.target.value)}
           className="block w-full appearance-none bg-whiteborder border-gray-300 rounded-lg shadow-sm py-3 pl-10 pr-3 text-base text-gray-900 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
         />
       </div>

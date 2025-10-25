@@ -5,6 +5,7 @@ import api from "@/lib/api";
 import { useEffect, useState } from "react";
 import Link from 'next/link';
 import { CalendarDaysIcon, ChevronRightIcon, ClipboardDocumentListIcon } from '@heroicons/react/24/solid';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 // Tekrar kullanılabilir durum rozeti
 const StatusBadge = ({ status }: { status: string }) => {
@@ -23,19 +24,68 @@ const StatusBadge = ({ status }: { status: string }) => {
 
 export default function ParentDashboard() {
   const { token } = useAuth();
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  //const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+  const dateFromUrl = searchParams.get('date');
+  const initialDate = dateFromUrl || new Date().toISOString().split('T')[0];
+
+  // State'i URL'den gelen veya bugünün tarihiyle başlat
+  const [selectedDate, setSelectedDate] = useState<string>(initialDate);
   const [homeworks, setHomeworks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const studentId = localStorage.getItem('selectedStudent');
-    if (!token || !studentId) return;
+    const dateParam = searchParams.get('date');
+    const targetDate = dateParam || new Date().toISOString().split('T')[0];
 
+    // Sadece URL'deki tarih mevcut state'ten farklıysa güncelle
+    if (targetDate !== selectedDate) {
+        console.log(`URL changed. Updating state: ${targetDate}`);
+        setSelectedDate(targetDate);
+    }
+    // Eğer URL'de tarih yoksa, URL'yi bugüne ayarla (ilk yükleme için)
+    // Ama bunu sadece selectedDate state'i henüz ayarlanmadıysa yapalım
+    else if (!dateParam && selectedDate !== targetDate) {
+        console.log(`Initial load without date param. Setting URL and state to today: ${targetDate}`);
+        // Hem state'i hem URL'yi ayarla
+        setSelectedDate(targetDate);
+        router.replace(`/parent?date=${targetDate}`, { scroll: false });
+    }
+  }, [searchParams, router, selectedDate]); // selectedDate bağımlılığını geri ekleyelim ama kontrolü içeride yapalım
+
+  useEffect(() => {
+
+    if (!token || !selectedDate) {
+      console.log("Skipping fetch: No token or selectedDate.");
+      setHomeworks([]);
+      return;
+    }
+
+    const studentId = localStorage.getItem('selectedStudent');
+    if (!studentId) {
+        console.log("Skipping fetch: No Student selected.");
+        setHomeworks([]);
+        return;
+    }
+
+    console.log(`Fetching homeworks for date: ${selectedDate}`);
     setLoading(true);
     api.get(`/api/parent/homeworks?studentId=${studentId}&date=${selectedDate}`, token)
-      .then(setHomeworks)
-      .catch(err => console.error("Ödevler yüklenemedi:", err))
-      .finally(() => setLoading(false));
+      .then(fetchedHomeworks => {
+        console.log("Homeworks fetched:", fetchedHomeworks);
+        setHomeworks(fetchedHomeworks);
+      })
+      .catch(err => {
+        console.error("Ödevler yüklenemedi:", err);
+        setHomeworks([]);
+      })
+      .finally(() => {
+        console.log("Fetch finished.");
+        setLoading(false);
+      });
+
+  // Bu effect SADECE token veya selectedDate değiştiğinde çalışmalı.
   }, [token, selectedDate]);
   
   const formatDateHeader = (dateStr: string) => {
@@ -44,6 +94,14 @@ export default function ParentDashboard() {
     const date = new Date(dateStr);
     return date.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
   };
+
+  const handleDateChange = (newDate: string) => {
+    router.replace(`/parent?date=${newDate}`, { scroll: false });
+  };
+
+  if (selectedDate === null) {
+    return <div className="text-center py-10 dark:text-gray-900">Tarih ayarlanıyor...</div>;
+  }
 
   return (
     <div className="space-y-5">
@@ -63,15 +121,15 @@ export default function ParentDashboard() {
         <input
           id="homeworkDate"
           type="date"
-          value={selectedDate}
-          onChange={(e) => setSelectedDate(e.target.value)}
+          value={selectedDate || ''}
+          onChange={(e) => handleDateChange(e.target.value)}
           className="block w-full appearance-none bg-white border border-gray-300 rounded-lg shadow-sm py-3 pl-10 pr-3 text-base text-gray-900 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
         />
       </div>
 
       {/* Ödev Listesi */}
       <div>
-        <h2 className="text-xl font-bold text-gray-800 mb-3">{formatDateHeader(selectedDate)}</h2>
+        <h2 className="text-xl font-bold text-gray-800 mb-3">{formatDateHeader(selectedDate || '')}</h2>
         <div className="space-y-3">
           {loading ? (
             <p className="text-center text-gray-500 py-4">Ödevler yükleniyor...</p>

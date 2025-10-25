@@ -52,6 +52,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   useEffect(() => {
+    console.log('burda')
     if (token) {
       api.get('/api/notifications', token).then(data => {
         const count = data.notifications.filter((n: any) => !n.isRead).length;

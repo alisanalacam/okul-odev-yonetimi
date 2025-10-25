@@ -163,7 +163,7 @@ export default function SubmissionDetailView({ initialData, refreshData }: Submi
                   {homework.isExtra ? (
                     <span className="text-sm text-gray-500 dark:text-yellow-700 bg-yellow-100 p-2 rounded-md flex items-center gap-2"><ExclamationCircleIcon className="h-5 w-5" /> Bu bir ekstra ödevdir. Puanlı değildir.</span>
                   ) : (
-                    <p></p>
+                    ''
                   )}
                   </p>
               </div>

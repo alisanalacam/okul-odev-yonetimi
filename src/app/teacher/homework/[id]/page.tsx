@@ -92,7 +92,7 @@ export default function HomeworkDetailPage() {
     // Saat farklarını hesaba katmadan sadece güne göre karşılaştırma
     
     const dueDate = new Date();
-    dueDate.setDate(dueDate.getDate() + 7);
+    dueDate.setDate(dueDate.getDate() + 14); // TODO: 7 günden 14 güne çıkarıldı.
     dueDate.setHours(23, 59, 59, 999); // Ödev gününün sonuna ayarla
     return new Date() > dueDate;
   }, [homework]);

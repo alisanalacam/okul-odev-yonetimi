@@ -122,7 +122,7 @@ export default function SubmissionDetailView({ initialData, refreshData }: Submi
     const isLocked = useMemo(() => {
       if (!initialData?.homework?.dueDate) return false; // Veri henüz gelmediyse kilitli değil
       const oneWeekAgo = new Date();
-      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+      oneWeekAgo.setDate(oneWeekAgo.getDate() - 14); // TODO: 7 günden 14 güne çıkarıldı.
       return new Date(initialData.homework.dueDate) < oneWeekAgo;
   }, [initialData?.homework?.dueDate]);
 

@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
   if (!homework) return NextResponse.json({ message: "Ödev bulunamadı." }, { status: 404 });
 
   const oneWeekAgo = new Date();
-  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+  oneWeekAgo.setDate(oneWeekAgo.getDate() - 14); // TODO: 7 günden 14 güne çıkarıldı.
 
   if (new Date(homework.dueDate) < oneWeekAgo) {
     return NextResponse.json({ message: "Bu ödevin teslim süresi 1 haftadan fazla geçtiği için işlem yapamazsınız." }, { status: 403 }); // 403 Forbidden
